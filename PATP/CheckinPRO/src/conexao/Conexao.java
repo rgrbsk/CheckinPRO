@@ -2,52 +2,78 @@ package conexao;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 public class Conexao {
-
-    // Configuração do banco de dados
-    private static final String URL = "jdbc:mysql://localhost:3309/patp_ads3"; // Substitua pelo seu banco
-    private static final String USER = "root";  // Seu usuário do MySQL
-    private static final String PASSWORD = "1234567890"; // Sua senha do MySQL
+    private static final String URL = "jdbc:mysql://localhost:3309/patp_ads3"; 
+    private static final String USER = "root"; 
+    private static final String PASSWORD = "1234567890"; 
 
 
-
-    // Método para obter conexão
-    public static Connection conectar() {
+    public static ResultSet executeQuery(String sql, List<Object> parametros) {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
         try {
-            return DriverManager.getConnection(URL, USER, PASSWORD);
+            conn = DriverManager.getConnection(URL, USER, PASSWORD);
+            
+            // Prepara o statement SQL
+            stmt = conn.prepareStatement(sql);
+            
+            // Define os parâmetros, se houver
+            if (parametros != null) {
+                for (int i = 0; i < parametros.size(); i++) {
+                    stmt.setObject(i + 1, parametros.get(i));
+                }
+            }
+            
+            // Executa a consulta 
+            rs = stmt.executeQuery();
+            return rs;
+            
         } catch (SQLException e) {
-            System.out.println("Erro ao conectar ao banco: " + e.getMessage());
+            e.printStackTrace();
             return null;
+        } finally {
+            // Não fechamos a conexão aqui porque o ResultSet pode ser usado posteriormente
+            // O chamador deve fechar a conexão, o statement e o ResultSet
         }
     }
 
-    // Método para inserir dados na tabela usuarios
-    public static void inserirUsuario(String nome, String sobrenome, String cpf, String email, String telefone) {
-        String sql = "INSERT INTO cliente (nome, sobrenome, cpf, email, telefone) VALUES (?, ?, ?, ?, ?)";
+    public static int executeUpdate(String sql, List<Object> parametros) {
+        Connection conn = null;
+        PreparedStatement stmt = null;
 
-        try (Connection conn = conectar();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, nome);
-            stmt.setString(2, sobrenome);
-            stmt.setString(3, cpf);
-            stmt.setString(4, email);
-            stmt.setString(5, telefone);
-            stmt.executeUpdate();
-
-            System.out.println("Usuário inserido com sucesso!");
-
+        try {
+            // Conecta ao banco de dados
+            conn = DriverManager.getConnection(URL, USER, PASSWORD);
+            
+            // Prepara o statement SQL
+            stmt = conn.prepareStatement(sql);
+            
+            // Define os parâmetros, se houver
+            if (parametros != null) {
+                for (int i = 0; i < parametros.size(); i++) {
+                    stmt.setObject(i + 1, parametros.get(i));
+                }
+            }
+            
+            // Executa a atualização (INSERT, UPDATE, DELETE)
+            return stmt.executeUpdate();
+            
         } catch (SQLException e) {
-            System.out.println("Erro ao inserir usuário: " + e.getMessage());
+            e.printStackTrace();
+            return -1;
+        } finally {
+            // Fecha o statement e a conexão
+            try {
+                if (stmt != null) stmt.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-    }
-
-    public static void main(String[] args) {
-        inserirUsuario("João ", "Silva","12345678900", "joaosilva@gmail.com", "55999445566");
-
-
-
-    }
-}
+        //seja louvado o gpt e deepseek kkkkkk video de meia hora n tinha dado mt certo
+    }}
