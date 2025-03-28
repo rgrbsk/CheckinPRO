@@ -171,7 +171,13 @@ public class Home extends JFrame {
         panel_1.setBounds(272, 10, 1105, 743);
         contentPane.add(panel_1);
         
+        JToggleButton tglbtnNewToggleButton_2 = new JToggleButton("New toggle button");
+        panel_1.add(tglbtnNewToggleButton_2);
+        
         JToggleButton tglbtnNewToggleButton = new JToggleButton("New toggle button");
         panel_1.add(tglbtnNewToggleButton);
+        
+        JToggleButton tglbtnNewToggleButton_1 = new JToggleButton("New toggle button");
+        panel_1.add(tglbtnNewToggleButton_1);
     }
 }

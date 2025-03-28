@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="lib/com.jgoodies.common_1.8.1.v20240327-0800.jar"/>
+	<classpathentry kind="lib" path="lib/com.jgoodies.forms_1.9.0.v20240327-0800.jar"/>
+	<classpathentry kind="lib" path="lib/com.miglayout.core_11.4.2.jar"/>
+	<classpathentry kind="lib" path="lib/com.miglayout.swing_11.4.2.jar"/>
+	<classpathentry kind="lib" path="lib/flatlaf-3.5.4.jar"/>
+	<classpathentry kind="lib" path="lib/miglayout-4.0.jar"/>
+	<classpathentry kind="lib" path="lib/TimingFramework-0.55.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
