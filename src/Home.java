@@ -1,22 +1,23 @@
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-
 import com.formdev.flatlaf.FlatDarkLaf;
-
 import java.awt.event.*;
 
 public class Home extends JFrame {
-
-    private JPanel contentPane;
+    private Checkin checkinP;
+    private Checkout checkoutP;
+    private JLayeredPane layeredPane;
+    private JPanel MainPanel;
+	private User userP;
+	private Room roomP;
+	
     
-    int xx, xy;
-
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                	UIManager.setLookAndFeel(new FlatDarkLaf());
+                    UIManager.setLookAndFeel(new FlatDarkLaf());
                     Home frame = new Home();
                     frame.setUndecorated(false);
                     frame.setVisible(true);
@@ -26,158 +27,164 @@ public class Home extends JFrame {
             }
         });
     }
-
+    
     public Home() {
-    	
         setResizable(false);
         setBackground(Color.WHITE);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 1400, 800);
-        contentPane = new JPanel();
-        contentPane.setBackground(new Color(19, 19, 19));
-        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-        setContentPane(contentPane);
-        contentPane.setLayout(null);
+        setBounds(100, 100, 1600, 900);
         
-        JPanel panel = new JPanel();
-        panel.setBackground(new Color(32, 32, 32));
-        panel.setForeground(new Color(0, 0, 0));
-        panel.setBounds(10, 10, 257, 743);
-        contentPane.add(panel);
-        panel.setLayout(null);
+        MainPanel = new JPanel();
+        MainPanel.setBackground(new Color(19, 19, 19));
+        MainPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+        setContentPane(MainPanel);
+        MainPanel.setLayout(null);
+        
+        JPanel panelMenu = new JPanel();
+        panelMenu.setBackground(new Color(32, 32, 32));
+        panelMenu.setBounds(6, 10, 261, 845);
+        panelMenu.setLayout(null);
+        MainPanel.add(panelMenu);
         
         JLabel logoImg = new JLabel("");
+        logoImg.setBackground(new Color(0, 255, 0));
         logoImg.setHorizontalAlignment(SwingConstants.CENTER);
-        logoImg.setBounds(0, 0, 257, 233);
-        panel.add(logoImg);
-        logoImg.setIcon(new ImageIcon(Home.class.getResource("/img/lgoBranco.png")));
+        logoImg.setBounds(0, 0, 257, 235);
+        logoImg.setIcon(new ImageIcon(Home.class.getResource("/img/LOGO BRANCO1.png")));
+        panelMenu.add(logoImg);
         
-        JButton checkoutBtn = new JButton("Check-out");
-        checkoutBtn.setForeground(Color.WHITE);
-        checkoutBtn.setFont(new Font("Arial", Font.BOLD, 18));
-        checkoutBtn.setFocusPainted(false);
-        checkoutBtn.setBackground(new Color(0, 128, 0));
-        checkoutBtn.setBounds(10, 355, 237, 45);
-        panel.add(checkoutBtn);
+        int buttonWidth = 237;
+        int buttonHeight = 45;
         
-        checkoutBtn.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                checkoutBtn.setBackground(new Color(0, 100, 0));
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                checkoutBtn.setBackground(new Color(0, 128, 0));
-            }
-        });
-
-        checkoutBtn.addActionListener(new ActionListener() {
+        JButton btnCheckin = new JButton("Check-in");
+        btnCheckin.setBorderPainted(false);
+        btnCheckin.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                switchScreen(checkinP);
             }
         });
+        btnCheckin.setForeground(Color.WHITE);
+        btnCheckin.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 19));
+        btnCheckin.setBackground(new Color(17, 193, 123));
+        btnCheckin.setBounds(10, 300, buttonWidth, buttonHeight);
+        btnCheckin.setIcon(new ImageIcon(Home.class.getResource("/img/icons8-check-in-hotel-30 (1).png")));
+        panelMenu.add(btnCheckin);
         
-        JButton roomsBtn = new JButton("Quartos");
-        roomsBtn.setForeground(Color.WHITE);
-        roomsBtn.setFont(new Font("Arial", Font.BOLD, 18));
-        roomsBtn.setFocusPainted(false);
-        roomsBtn.setBackground(new Color(0, 128, 0));
-        roomsBtn.setBounds(10, 434, 237, 45);
-        panel.add(roomsBtn);
-        
-        roomsBtn.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                roomsBtn.setBackground(new Color(0, 100, 0));
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                roomsBtn.setBackground(new Color(0, 128, 0));
-            }
-        });
-
-        roomsBtn.addActionListener(new ActionListener() {
+        JButton btnCheckout = new JButton("Check-out");
+        btnCheckout.setBorderPainted(false);
+        btnCheckout.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                switchScreen(checkoutP);
             }
         });
+        btnCheckout.setForeground(Color.WHITE);
+        btnCheckout.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 19));
+        btnCheckout.setBackground(new Color(17, 193, 123));
+        btnCheckout.setBounds(10, 380, buttonWidth, buttonHeight);
+        btnCheckout.setIcon(new ImageIcon(Home.class.getResource("/img/icons8-hotel-chekc-fora-30 (1).png")));
+        panelMenu.add(btnCheckout);
         
-        JButton clientsBtn = new JButton("Clientes");
-        clientsBtn.setForeground(Color.WHITE);
-        clientsBtn.setFont(new Font("Arial", Font.BOLD, 18));
-        clientsBtn.setFocusPainted(false);
-        clientsBtn.setBackground(new Color(70, 130, 180)); 
-        clientsBtn.setBounds(10, 513, 237, 45);
-        panel.add(clientsBtn);
-        
-        clientsBtn.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                clientsBtn.setBackground(new Color(50, 120, 160));  
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                clientsBtn.setBackground(new Color(70, 130, 180)); 
-            }
-        });
-
-        clientsBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-            }
-        });
-        
-        JButton exitBtn = new JButton("Sair");
-        exitBtn.setForeground(Color.WHITE);
-        exitBtn.setFont(new Font("Arial", Font.BOLD, 14));
-        exitBtn.setFocusPainted(false);
-        exitBtn.setBackground(new Color(255, 0, 0));
-        exitBtn.setBounds(10, 675, 237, 35);
-        panel.add(exitBtn);
-        
-        JButton btnNewButton = new JButton("Check-in");
-        btnNewButton.setForeground(new Color(255, 255, 255));
-        btnNewButton.addActionListener(new ActionListener() {
+        JButton btnQuartos = new JButton("Quartos");
+        btnQuartos.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
+        		switchScreen(roomP);
         	}
         });
-        btnNewButton.setIcon(new ImageIcon(Home.class.getResource("/img/icons8-smart-checkin-30.png")));
-        btnNewButton.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 23));
-        btnNewButton.setBackground(new Color(0, 128, 0));
-       
-        btnNewButton.setBounds(10, 278, 237, 45);
-        panel.add(btnNewButton);
+        btnQuartos.setBorderPainted(false);
+        btnQuartos.setForeground(Color.WHITE);
+        btnQuartos.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 19));
+        btnQuartos.setBackground(new Color(17, 193, 123));
+        btnQuartos.setBounds(10, 495, buttonWidth, buttonHeight);
+        btnQuartos.setIcon(new ImageIcon(Home.class.getResource("/img/icons8-interior-do-quarto-30.png")));
+        panelMenu.add(btnQuartos);
         
-        exitBtn.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                exitBtn.setBackground(new Color(200, 0, 0));
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                exitBtn.setBackground(new Color(255, 0, 0));
-            }
+        JButton btnClientes = new JButton("Clientes");
+        btnClientes.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		switchScreen(userP);
+        	}
         });
-
-        exitBtn.addActionListener(new ActionListener() {
+        btnClientes.setBorderPainted(false);
+        btnClientes.setForeground(Color.WHITE);
+        btnClientes.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 19));
+        btnClientes.setBackground(new Color(17, 193, 123));
+        btnClientes.setBounds(10, 576, buttonWidth, buttonHeight);
+        btnClientes.setIcon(new ImageIcon(Home.class.getResource("/img/icons8-homem-de-negócios-30.png")));
+        panelMenu.add(btnClientes);
+        
+        JLabel lblVersion = new JLabel("Versão 0.0.1");
+        lblVersion.setForeground(new Color(255, 255, 255));
+        lblVersion.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 14));
+        lblVersion.setHorizontalAlignment(SwingConstants.CENTER);
+        lblVersion.setBounds(0, 209, 257, 16);
+        panelMenu.add(lblVersion);
+        
+        JLabel lblMenuGerenciamento = new JLabel("Gerenciamento");
+        lblMenuGerenciamento.setForeground(Color.LIGHT_GRAY);
+        lblMenuGerenciamento.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 15));
+        lblMenuGerenciamento.setBounds(10, 272, 118, 16);
+        panelMenu.add(lblMenuGerenciamento);
+        
+        JLabel lblMenuCadastro = new JLabel("Cadastro");
+        lblMenuCadastro.setForeground(Color.LIGHT_GRAY);
+        lblMenuCadastro.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 15));
+        lblMenuCadastro.setBounds(10, 467, 118, 16);
+        panelMenu.add(lblMenuCadastro);
+        
+        JButton btnSair = new JButton("Sair");
+        btnSair.setBorderPainted(false);
+        btnSair.setIcon(new ImageIcon(Home.class.getResource("/img/icons8-logout-arredondado-20.png")));
+        btnSair.setForeground(Color.WHITE);
+        btnSair.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 14));
+        btnSair.setBackground(new Color(236, 66, 9));
+        btnSair.setBounds(10, 790, 237, 32);
+        btnSair.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                System.exit(0);  
+                System.exit(0);
             }
         });
+        panelMenu.add(btnSair);
+
+        JPanel customBar2 = new JPanel();
+        customBar2.setBackground(Color.DARK_GRAY);
+        customBar2.setBounds(10, 205, 237, 2);
+        panelMenu.add(customBar2);
         
-        JPanel panel_1 = new JPanel();
-        panel_1.setBackground(new Color(55, 55, 55));
-        panel_1.setBounds(272, 10, 1105, 743);
-        contentPane.add(panel_1);
+        JPanel customBar = new JPanel();
+        customBar.setBackground(new Color(17, 193, 123));
+        customBar.setBounds(0, 0, 1584, 4);
+        MainPanel.add(customBar);
         
-        JToggleButton tglbtnNewToggleButton_2 = new JToggleButton("New toggle button");
-        panel_1.add(tglbtnNewToggleButton_2);
         
-        JToggleButton tglbtnNewToggleButton = new JToggleButton("New toggle button");
-        panel_1.add(tglbtnNewToggleButton);
+        layeredPane = new JLayeredPane();
+        layeredPane.setBounds(274, 10, 1304, 845);
+        MainPanel.add(layeredPane);
         
-        JToggleButton tglbtnNewToggleButton_1 = new JToggleButton("New toggle button");
-        panel_1.add(tglbtnNewToggleButton_1);
+        checkinP = new Checkin();
+        checkoutP = new Checkout();
+        userP = new User();
+        roomP = new Room();
+        
+        
+        layeredPane.add(checkinP, JLayeredPane.DEFAULT_LAYER);
+        layeredPane.add(checkoutP, JLayeredPane.PALETTE_LAYER);
+        layeredPane.add(userP, JLayeredPane.PALETTE_LAYER);
+        layeredPane.add(roomP, JLayeredPane.PALETTE_LAYER);
+        
+        checkinP.setVisible(true);
+        checkoutP.setVisible(false);
+        userP.setVisible(false);
+        roomP.setVisible(false);
+    }
+    
+    public void switchScreen(JPanel panel) {
+        checkinP.setVisible(false);
+        checkoutP.setVisible(false);
+        userP.setVisible(false);
+        roomP.setVisible(false);
+        
+        panel.setVisible(true);
+        panel.revalidate();
+        panel.repaint();
     }
 }
