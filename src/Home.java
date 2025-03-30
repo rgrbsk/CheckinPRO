@@ -5,10 +5,14 @@ import com.formdev.flatlaf.FlatDarkLaf;
 import java.awt.event.*;
 
 public class Home extends JFrame {
-
+    private Checkin checkinP;
+    private Checkout checkoutP;
+    private JLayeredPane layeredPane;
     private JPanel MainPanel;
-    int xx, xy;
-
+	private User userP;
+	private Room roomP;
+	
+    
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -23,7 +27,7 @@ public class Home extends JFrame {
             }
         });
     }
-
+    
     public Home() {
         setResizable(false);
         setBackground(Color.WHITE);
@@ -51,27 +55,28 @@ public class Home extends JFrame {
         
         int buttonWidth = 237;
         int buttonHeight = 45;
-        int buttonSpacing = 30;
-        int startY = 250;
         
         JButton btnCheckin = new JButton("Check-in");
         btnCheckin.setBorderPainted(false);
         btnCheckin.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
-        	}
+            public void actionPerformed(ActionEvent e) {
+                switchScreen(checkinP);
+            }
         });
         btnCheckin.setForeground(Color.WHITE);
         btnCheckin.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 19));
         btnCheckin.setBackground(new Color(17, 193, 123));
         btnCheckin.setBounds(10, 300, buttonWidth, buttonHeight);
-        	
-
-   
         btnCheckin.setIcon(new ImageIcon(Home.class.getResource("/img/icons8-check-in-hotel-30 (1).png")));
         panelMenu.add(btnCheckin);
         
         JButton btnCheckout = new JButton("Check-out");
         btnCheckout.setBorderPainted(false);
+        btnCheckout.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                switchScreen(checkoutP);
+            }
+        });
         btnCheckout.setForeground(Color.WHITE);
         btnCheckout.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 19));
         btnCheckout.setBackground(new Color(17, 193, 123));
@@ -80,6 +85,11 @@ public class Home extends JFrame {
         panelMenu.add(btnCheckout);
         
         JButton btnQuartos = new JButton("Quartos");
+        btnQuartos.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		switchScreen(roomP);
+        	}
+        });
         btnQuartos.setBorderPainted(false);
         btnQuartos.setForeground(Color.WHITE);
         btnQuartos.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 19));
@@ -89,6 +99,11 @@ public class Home extends JFrame {
         panelMenu.add(btnQuartos);
         
         JButton btnClientes = new JButton("Clientes");
+        btnClientes.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		switchScreen(userP);
+        	}
+        });
         btnClientes.setBorderPainted(false);
         btnClientes.setForeground(Color.WHITE);
         btnClientes.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 19));
@@ -123,22 +138,53 @@ public class Home extends JFrame {
         btnSair.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 14));
         btnSair.setBackground(new Color(236, 66, 9));
         btnSair.setBounds(10, 790, 237, 32);
+        btnSair.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
         panelMenu.add(btnSair);
-        
+
         JPanel customBar2 = new JPanel();
         customBar2.setBackground(Color.DARK_GRAY);
         customBar2.setBounds(10, 205, 237, 2);
         panelMenu.add(customBar2);
         
-        JPanel mainFrame = new JPanel();
-        mainFrame.setBackground(new Color(55, 55, 55));
-        mainFrame.setBounds(272, 10, 1306, 845);
-        MainPanel.add(mainFrame);
-        mainFrame.setLayout(new FlowLayout());
-        
         JPanel customBar = new JPanel();
         customBar.setBackground(new Color(17, 193, 123));
         customBar.setBounds(0, 0, 1584, 4);
         MainPanel.add(customBar);
+        
+        
+        layeredPane = new JLayeredPane();
+        layeredPane.setBounds(274, 10, 1304, 845);
+        MainPanel.add(layeredPane);
+        
+        checkinP = new Checkin();
+        checkoutP = new Checkout();
+        userP = new User();
+        roomP = new Room();
+        
+        
+        layeredPane.add(checkinP, JLayeredPane.DEFAULT_LAYER);
+        layeredPane.add(checkoutP, JLayeredPane.PALETTE_LAYER);
+        layeredPane.add(userP, JLayeredPane.PALETTE_LAYER);
+        layeredPane.add(roomP, JLayeredPane.PALETTE_LAYER);
+        
+        checkinP.setVisible(true);
+        checkoutP.setVisible(false);
+        userP.setVisible(false);
+        roomP.setVisible(false);
+    }
+    
+    public void switchScreen(JPanel panel) {
+        checkinP.setVisible(false);
+        checkoutP.setVisible(false);
+        userP.setVisible(false);
+        roomP.setVisible(false);
+        
+        panel.setVisible(true);
+        panel.revalidate();
+        panel.repaint();
     }
 }
