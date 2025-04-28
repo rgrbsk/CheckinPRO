@@ -5,12 +5,12 @@ import com.formdev.flatlaf.FlatDarkLaf;
 import java.awt.event.*;
 
 public class Home extends JFrame {
-    private Checkin checkinP;
-    private Checkout checkoutP;
+    private CheckinFrame checkinP;
+    private CheckoutFrame checkoutP;
     private JLayeredPane layeredPane;
     private JPanel MainPanel;
-	private User userP;
-	private Room roomP;
+	private UserFrame userP;
+	private RoomFrame roomP;
 	
     
     public static void main(String[] args) {
@@ -160,10 +160,10 @@ public class Home extends JFrame {
         layeredPane.setBounds(274, 10, 1304, 845);
         MainPanel.add(layeredPane);
         
-        checkinP = new Checkin();
-        checkoutP = new Checkout();
-        userP = new User();
-        roomP = new Room();
+        checkinP = new CheckinFrame();
+        checkoutP = new CheckoutFrame();
+        userP = new UserFrame();
+        roomP = new RoomFrame();
         
         
         layeredPane.add(checkinP, JLayeredPane.DEFAULT_LAYER);

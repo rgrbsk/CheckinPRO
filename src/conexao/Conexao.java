@@ -7,9 +7,9 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class Conexao { // Adicionar senha e trocar a porta
-    private static final String URL = "jdbc:mysql://localhost:3309/patp_ads3"; 
+    private static final String URL = "jdbc:mysql://localhost:3306/mydb";
     private static final String USER = "root"; 
-    private static final String PASSWORD = "1234567890"; 
+    private static final String PASSWORD = "2424"; 
 
 
     public static ResultSet executeQuery(String sql, List<Object> parametros) {
@@ -19,6 +19,7 @@ public class Conexao { // Adicionar senha e trocar a porta
         try {
             conn = DriverManager.getConnection(URL, USER, PASSWORD);
             
+
             // Prepara o statement SQL
             stmt = conn.prepareStatement(sql);
             
@@ -31,6 +32,8 @@ public class Conexao { // Adicionar senha e trocar a porta
             
             // Executa a consulta 
             rs = stmt.executeQuery();
+             
+            
             return rs;
             
         } catch (SQLException e) {
