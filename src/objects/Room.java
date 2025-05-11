@@ -9,109 +9,7 @@ import conexao.Conexao;
 
 public class Room {
 
-    private int numero;
-    private int andar;
-    private int maxHospedes;
-    private int nmrCamas;
-    private int nmrSuites;
-    private boolean frigobar;
-    private boolean tv;
-    private double valor;
-    private String descricao;
-
-    public Room(int numero, int andar, int maxHospedes,int nmrCamas, int nmrSuites, boolean frigobar, boolean tv, double valor, String descricao) {
-        this.numero = numero;
-        this.andar = andar;
-        this.maxHospedes = maxHospedes;
-        this.nmrCamas = nmrCamas;
-        this.nmrSuites = nmrSuites;
-        this.frigobar = frigobar;
-        this.tv = tv;
-        this.valor = valor;
-        this.descricao = descricao;
-    }
-
-    @Override
-    public String toString() {
-        return "Room [numero=" + numero + ", andar=" + andar + ", valor=" + valor + ", maxHospedes=" + maxHospedes + ", nmrCamas=" + nmrCamas
-                + ", descricao=" + descricao + ", nmrSuites=" + nmrSuites + ", tv=" + tv + ", frigobar=" + frigobar
-                + "]";
-    }
-
-    public int getNumero() {
-        return numero;
-    }
-
-    public void setNumero(int numero) {
-        this.numero = numero;
-    }
-
-    public int getAndar() {
-        return andar;
-    }
-
-    public void setAndar(int andar) {
-        this.andar = andar;
-    }
-
-    public double getValor() {
-        return valor;
-    }
-
-    public void setValor(double valor) {
-        this.valor = valor;
-    }
-
-    public int getMaxHospedes() {
-        return maxHospedes;
-    }
-
-    public void setMaxHospedes(int maxHospedes) {
-        this.maxHospedes = maxHospedes;
-    }
-    
-    public int getnmrCamas() {
-        return nmrCamas;
-    }
-    
-    public void setnmrCamas(int nmrCamas) {
-        this.nmrCamas = nmrCamas;
-    }
-        
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-
-    public int getNmrSuites() {
-        return nmrSuites;
-    }
-
-    public void setNmrSuites(int nmrSuites) {
-        this.nmrSuites = nmrSuites;
-    }
-
-    public boolean isTv() {
-        return tv;
-    }
-
-    public void setTv(boolean tv) {
-        this.tv = tv;
-    }
-
-    public boolean isFrigobar() {
-        return frigobar;
-    }
-
-    public void setFrigobar(boolean frigobar) {
-        this.frigobar = frigobar;
-    }
-
-	
-	
+  
 	
 	public class Filter {
 	    public static List<Object[]> searchRoom(List<Object> parametersSearch, String op) {
@@ -119,11 +17,11 @@ public class Room {
 	        List<Object[]> result = new ArrayList<>();
 
 	        if (op.equals("NÚMERO")) {
-	            sql = "SELECT * FROM quarto WHERE nmr_quarto LIKE ?";
+	            sql = "SELECT * FROM quartos WHERE nmr_quarto LIKE ?";
 	        } else if (op.equals("ANDAR")) {
-	            sql = "SELECT * FROM quarto WHERE andar = ?";
+	            sql = "SELECT * FROM quartos WHERE andar = ?";
 	        } else if (op.equals("TODOS")) {
-	            sql = "SELECT * FROM quarto";
+	            sql = "SELECT * FROM quartos";
 	            parametersSearch = null; 
 	        } else {
 	            return result;
@@ -133,11 +31,14 @@ public class Room {
 	            while (rs != null && rs.next()) {
 
 	                Object[] linha = {
+	                	rs.getInt("id"),
 	                    rs.getInt("nmr_quarto"),
 	                    rs.getInt("andar"),
-	                    rs.getInt("max_hospedes"),
-	                    rs.getInt("nmr_camas"),
-	                    ("R$") + rs.getInt("valor_diaria"),
+	                    rs.getInt("capacidade"),
+	                    rs.getInt("camas"),
+	                    ("R$") + rs.getInt("preco_diaria"),
+	                    rs.getString("tipo"),
+	                    rs.getString("status"),
 	                    
 	                    
 	                };
@@ -157,8 +58,8 @@ public class Room {
 	
 	public class CadastrarQuarto {
 	    public static int ListAddRoom(List<Object> parameters) {
-	        String sql = "INSERT INTO quarto (nmr_quarto, andar, max_hospedes, nmr_camas, frigobar, tv, nmr_suites, valor_diaria, descricao) " +
-	                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	        String sql = "INSERT INTO quartos (nmr_quarto, andar, capacidade, camas, preco_diaria, descricao, tipo) " +
+	                     "VALUES ( ?, ?, ?, ?, ?, ?, ?)";
 	        
 	        try {
 	            int insertRoomRows = Conexao.executeUpdate(sql, parameters);
@@ -171,6 +72,85 @@ public class Room {
 	            return 0;
 	        }
 	    }
+	    
+	    public class deleteData {
+		    public static int ListDeleteRoom(List<Object> parameters) {
+		        String sql = "DELETE  FROM quartos WHERE id = ? "; 
+		                     
+		        
+		        try {
+		            int deleteRoomRows = Conexao.executeUpdate(sql, parameters);
+		            
+		         
+		            return deleteRoomRows;
+		        } catch (Exception e) {
+		            System.err.println("Erro ao deletar quarto " + e.getMessage());
+		            e.printStackTrace();
+		            return 0;
+	    
+		        }
+		    }
+
+			}
+	    public class EditarQuarto {
+	        
+	        public static List<Object[]> Id(List<Object> IdSearch) {
+	            List<Object[]> result = new ArrayList<>();
+	            
+	            String sql = "SELECT * FROM quartos WHERE id = ?";
+	            
+	            try (ResultSet rs = Conexao.executeQuery(sql, IdSearch)) {
+	                while (rs != null && rs.next()) {
+	                    String status = rs.getString("status");
+	                 // Adicionar condição de status    
+	                    
+	                    Object[] quarto = {
+	                        rs.getInt("id"),
+	                        rs.getInt("nmr_quarto"),
+	                        rs.getInt("andar"),
+	                        rs.getInt("capacidade"),
+	                        rs.getInt("camas"),
+	                        rs.getDouble("preco_diaria"),
+	                        rs.getString("descricao"),
+	                        rs.getString("tipo"),
+	                        status
+	                    };
+	                    result.add(quarto);
+	                }
+	            } catch (Exception e) {
+	                System.err.println("Erro ao buscar quarto: " + e.getMessage());
+	                e.printStackTrace();
+	            }
+	            
+	            return result;
+	        }
+
+	        public static int ListEditRoom(List<Object> parameters) {
+	            
+	            List<Object> idSearch = List.of(parameters.get(parameters.size() - 1)); 
+	            List<Object[]> quarto = Id(idSearch);
+	            
+	            if (!quarto.isEmpty()) {
+	                String status = (String) quarto.get(0)[8]; 
+	                if (!"Disponível".equals(status)) {
+	                    System.err.println("Não é possível editar quarto com status: " + status);
+	                    return 0;
+	                }
+	            }
+	            
+	            String sql = "UPDATE QUARTOS SET nmr_quarto = ?, andar = ?, capacidade = ?, camas = ?, "
+	                       + "preco_diaria = ?, descricao = ?, tipo = ? WHERE id = ?";
+	            
+	            try {
+	                int updatedRows = Conexao.executeUpdate(sql, parameters);
+	                return updatedRows;
+	            } catch (Exception e) {
+	                System.err.println("Erro ao editar quarto: " + e.getMessage());
+	                e.printStackTrace();
+	                return 0;
+	            }
+	        }
+	    }  
 	}
 }
 	
