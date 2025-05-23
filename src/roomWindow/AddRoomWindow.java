@@ -1,29 +1,25 @@
 package roomWindow;
 
-import java.awt.EventQueue;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
 import java.awt.Color;
+import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.SwingConstants;
-import objects.Room;
-import objects.Room.CadastrarQuarto;
-
-import javax.swing.JTextField;
-import java.awt.Font;
-import javax.swing.JTextArea;
-import javax.swing.JButton;
+import javax.swing.JPanel;
 import javax.swing.JSpinner;
-import javax.swing.JCheckBox;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
-import java.util.List;
-import java.util.ArrayList;
-import javax.swing.JComboBox;
-import javax.swing.JRadioButton;
-import javax.swing.DefaultComboBoxModel;
+import javax.swing.SwingConstants;
+
+import objects.Room;
 
 public class AddRoomWindow {
 
@@ -206,49 +202,35 @@ public class AddRoomWindow {
     }
     
  
-        	public void addRoomDb() { // Get dos campos para criar lista e adiconar aos parametros da executeUpdate
-        	    try {
-        	    	
-        	        int nmrQuarto = Integer.parseInt(textFieldIdentificacaoQuarto.getText());
-        	        int andar = Integer.parseInt(textFieldAndarQuarto.getText());
-        	        double valorDiaria = (Double) spinnerValorQuarto.getValue();
-        	        int maxHospedes = (Integer) spinnerMaximoHospede.getValue();
-        	        int nmrCamas = (Integer) spinnerNmrCamas.getValue();
-        	        String descricao = textAreaDescricaoQuarto.getText();
-        	        String tipo  = (String) comboBoxTipoQuarto.getSelectedItem();
-        	        
-        	        
-        	         
-        	        
-        	        
-        	        List<Object> parameters = new ArrayList<>();
-        	        parameters.add(nmrQuarto);
-        	        parameters.add(andar);
-        	        parameters.add(maxHospedes);
-        	        parameters.add(nmrCamas);
-        	        parameters.add(valorDiaria);
-        	        parameters.add(descricao);
-        	        parameters.add(tipo);
-        	       
-        	        int result = CadastrarQuarto.ListAddRoom(parameters);
-        	        
-        	        if (result > 0) {
-        	            JOptionPane.showMessageDialog(frameAddRoom, "Quarto cadastrado com sucesso!");
-        	      
-        	            frameAddRoom.dispose();
-        	            
-        	        } else {
-        	            JOptionPane.showMessageDialog(frameAddRoom, "Falha ao cadastrar quarto.", "Erro", JOptionPane.ERROR_MESSAGE);
-        	        }
-        	        
-        	    } catch (NumberFormatException e) {
-        	        JOptionPane.showMessageDialog(frameAddRoom, "Por favor, insira valores numéricos válidos.", "Erro de Formato", JOptionPane.ERROR_MESSAGE);
-        	    } catch (Exception e) {
-        	        JOptionPane.showMessageDialog(frameAddRoom, "Erro ao cadastrar quarto: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
-        	        e.printStackTrace();
-        	    }
-        	}
-
+    public void addRoomDb() {
+        try {
+        	
+        	 int nmrQuarto = Integer.parseInt(textFieldIdentificacaoQuarto.getText());
+             int andar = Integer.parseInt(textFieldAndarQuarto.getText());
+             int valorDiaria = ((Number) spinnerValorQuarto.getValue()).intValue();
+             int maxHospedes = ((Number) spinnerMaximoHospede.getValue()).intValue();
+             int nmrCamas = ((Number) spinnerNmrCamas.getValue()).intValue();
+             String descricao = textAreaDescricaoQuarto.getText();
+             String tipo = (String) comboBoxTipoQuarto.getSelectedItem();
+              
+           
+            
+            int result = Room.addRoom(nmrQuarto, andar, valorDiaria, maxHospedes,nmrCamas,descricao,tipo);
+            
+            if (result > 0) {
+                JOptionPane.showMessageDialog(frameAddRoom, "Quarto cadastrado com sucesso!");
+                frameAddRoom.dispose();
+            } else {
+                JOptionPane.showMessageDialog(frameAddRoom, "Falha ao cadastrar quarto.", "Erro", JOptionPane.ERROR_MESSAGE);
+            }
+            
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(frameAddRoom, "Por favor, insira valores numéricos válidos.", "Erro de Formato", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(frameAddRoom, "Erro ao cadastrar quarto: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
         	public void cleanFields() {
         		
         		textFieldIdentificacaoQuarto.setText(null);;

@@ -14,5 +14,9 @@
 	<classpathentry exported="true" kind="lib" path="lib/miglayout-4.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/TimingFramework-0.55.jar"/>
 	<classpathentry kind="lib" path="lib/mysql-connector-j-9.1.0.jar"/>
+	<classpathentry kind="lib" path="lib/calendar/jcalendar-1.4.jar"/>
+	<classpathentry kind="lib" path="lib/calendar/jgoodies-common-1.2.0.jar"/>
+	<classpathentry kind="lib" path="lib/calendar/jgoodies-looks-2.4.1.jar"/>
+	<classpathentry kind="lib" path="lib/calendar/junit-4.6.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

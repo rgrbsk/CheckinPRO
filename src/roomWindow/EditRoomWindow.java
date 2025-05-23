@@ -8,7 +8,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import objects.Room;
-import objects.Room.CadastrarQuarto.EditarQuarto;
 
 import javax.swing.JTextField;
 import java.awt.Font;
@@ -227,30 +226,18 @@ public class EditRoomWindow {
     	
     	 try {
     	
-    	int id = Integer.parseInt(textFieldIdQuarto.getText());
-        int nmrQuarto = Integer.parseInt(textFieldIdentificacaoQuarto.getText());
-        int andar = Integer.parseInt(textFieldAndarQuarto.getText());
-        double valorDiaria = (Double) spinnerValorQuarto.getValue();
-        int maxHospedes = (Integer) spinnerMaximoHospede.getValue();
-        int nmrCamas = (Integer) spinnerNmrCamas.getValue();
-        String descricao = textAreaDescricaoQuarto.getText();
-        String tipo = (String) comboBoxTipoQuarto.getSelectedItem();
-        
-        
-        
-        
-        List<Object> parameters = new ArrayList<>();
-        
-        parameters.add(nmrQuarto);
-        parameters.add(andar);
-        parameters.add(maxHospedes);
-        parameters.add(nmrCamas);
-        parameters.add(valorDiaria);
-        parameters.add(descricao);
-        parameters.add(tipo);
-        parameters.add(id);
+    		 int id = Integer.parseInt(textFieldIdQuarto.getText());
+	    	 int nmrQuarto = Integer.parseInt(textFieldIdentificacaoQuarto.getText());
+	         int andar = Integer.parseInt(textFieldAndarQuarto.getText());
+	         int valorDiaria = ((Number) spinnerValorQuarto.getValue()).intValue();
+	         int maxHospedes = ((Number) spinnerMaximoHospede.getValue()).intValue();
+	         int nmrCamas = ((Number) spinnerNmrCamas.getValue()).intValue();
+	         String descricao = textAreaDescricaoQuarto.getText();
+	         String tipo = (String) comboBoxTipoQuarto.getSelectedItem();
+	         String status = "Pendente"; 
        
-        int result = EditarQuarto.ListEditRoom(parameters);
+       
+        int result = Room.editRoom(id, nmrQuarto, tipo, descricao, maxHospedes, valorDiaria, status, nmrCamas, andar);
         
        
         

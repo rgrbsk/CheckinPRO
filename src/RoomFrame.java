@@ -15,7 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
-import objects.Room.CadastrarQuarto.deleteData;
+
+import objects.Room;
 import objects.Room.Filter;
 import roomWindow.AddRoomWindow;
 import roomWindow.EditRoomWindow;
@@ -32,7 +33,6 @@ public class RoomFrame extends JPanel {
     private JTable tabela;
     private DefaultTableModel model;
     private JButton btnNewButtonDeleteRoom;
-    
     public Object selectedRoomNumber = null;
    
     public Object getSelectedRoomNumber() {
@@ -207,17 +207,17 @@ public class RoomFrame extends JPanel {
         );
 
         if (confirm == JOptionPane.YES_OPTION) {
-            List<Object> parameters = new ArrayList<>();
-            parameters.add(selectedRoomNumber);
+        	
+        	int id = (int) selectedRoomNumber;
             
-            int result = deleteData.ListDeleteRoom(parameters);
+            int result = Room.deleteData(id);
             
             if (result > 0) {
                 JOptionPane.showMessageDialog(this, "Quarto apagado com sucesso!");
                 loadData();
                 selectedRoomNumber = null;
             } else {
-                JOptionPane.showMessageDialog(this, "Falha ao apagar quarto, reservas registradas", "Erro", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Falha ao apagar quarto, reservas registradas no quarto", "Erro", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
