@@ -87,6 +87,7 @@ public class RoomFrame extends JPanel {
         add(btnNewButtonSearch);
 
         btnNewButtonDeleteRoom = new JButton("Apagar Quarto");
+        btnNewButtonDeleteRoom.setIcon(new ImageIcon(RoomFrame.class.getResource("/img/Cancelar.png")));
         btnNewButtonDeleteRoom.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 deleteRoomDB();
@@ -97,6 +98,8 @@ public class RoomFrame extends JPanel {
         add(btnNewButtonDeleteRoom);
 
         JButton btnNewButtonAddRoom = new JButton("Adicionar Quarto");
+        btnNewButtonAddRoom.setIcon(new ImageIcon(RoomFrame.class.getResource("/img/Adicionar.png")));
+        btnNewButtonAddRoom.setSelectedIcon(new ImageIcon(RoomFrame.class.getResource("/img/Adicionar.png")));
         btnNewButtonAddRoom.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 AddRoomWindow addRoom = new AddRoomWindow();
@@ -155,6 +158,7 @@ public class RoomFrame extends JPanel {
         add(textFieldSearch);
 
         JButton btnNewButtonEditRoom = new JButton("Editar Quarto");
+        btnNewButtonEditRoom.setIcon(new ImageIcon(RoomFrame.class.getResource("/img/EditarC.png")));
         btnNewButtonEditRoom.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		

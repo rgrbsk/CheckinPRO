@@ -20,6 +20,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 
 import objects.Room;
+import javax.swing.ImageIcon;
 
 public class AddRoomWindow {
 
@@ -116,7 +117,8 @@ public class AddRoomWindow {
         MainPanelAddRoom.add(panelCustomFooter);
         panelCustomFooter.setLayout(null);
         
-        JButton btnConcluir = new JButton("Concluir");
+        JButton btnConcluir = new JButton("Adicionar");
+        btnConcluir.setIcon(new ImageIcon(AddRoomWindow.class.getResource("/img/Adicionar.png")));
         btnConcluir.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 addRoomDb();
@@ -125,7 +127,8 @@ public class AddRoomWindow {
         btnConcluir.setBounds(82, 14, 174, 37);
         panelCustomFooter.add(btnConcluir);
         
-        JButton btnApagar = new JButton("Apagar");
+        JButton btnApagar = new JButton("Limpar");
+        btnApagar.setIcon(new ImageIcon(AddRoomWindow.class.getResource("/img/icons8-pencil-eraser-30.png")));
         btnApagar.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		cleanFields();

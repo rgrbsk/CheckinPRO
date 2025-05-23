@@ -32,6 +32,7 @@ import com.toedter.calendar.JDateChooser;
 import conexao.Conexao;
 import objects.Reserve;
 import objects.Room;
+import javax.swing.ImageIcon;
 
 public class AddReserveWindow {
 
@@ -200,6 +201,7 @@ public class AddReserveWindow {
         scrollPane.setViewportView(table);
         
         JButton btnClear = new JButton("Limpar");
+        btnClear.setIcon(new ImageIcon(AddReserveWindow.class.getResource("/img/icons8-pencil-eraser-30.png")));
         btnClear.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		clearFields();
@@ -209,6 +211,7 @@ public class AddReserveWindow {
         mainPanelAddRoom.add(btnClear);
         
         JButton btnConfirm = new JButton("Confirmar");
+        btnConfirm.setIcon(new ImageIcon(AddReserveWindow.class.getResource("/img/Adicionar.png")));
         btnConfirm.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 createReserve();

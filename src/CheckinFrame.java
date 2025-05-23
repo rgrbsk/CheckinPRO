@@ -68,6 +68,7 @@ public class CheckinFrame extends JPanel {
 		txtCheckin.setColumns(10);
 		
 		JButton btnNewButtonConfirmCheckin = new JButton("Confirmar Entrada");
+		btnNewButtonConfirmCheckin.setIcon(new ImageIcon(CheckinFrame.class.getResource("/img/icons8-form-30.png")));
 		btnNewButtonConfirmCheckin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
@@ -79,6 +80,7 @@ public class CheckinFrame extends JPanel {
 		add(btnNewButtonConfirmCheckin);
 		
 		JButton btnNewButtonAddCheckin = new JButton("Cadastrar Entrada");
+		btnNewButtonAddCheckin.setIcon(new ImageIcon(CheckinFrame.class.getResource("/img/Adicionar.png")));
 		btnNewButtonAddCheckin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
@@ -127,6 +129,7 @@ public class CheckinFrame extends JPanel {
         
 		
 		JButton btnNewButtonDeleteReserve = new JButton("Cancelar Reserva");
+		btnNewButtonDeleteReserve.setIcon(new ImageIcon(CheckinFrame.class.getResource("/img/Cancelar.png")));
 		btnNewButtonDeleteReserve.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				cancelReserve();
@@ -138,6 +141,7 @@ public class CheckinFrame extends JPanel {
 		add(btnNewButtonDeleteReserve);
 		
 		JButton btnNewButtonEditReserve = new JButton("Editar Reserva");
+		btnNewButtonEditReserve.setIcon(new ImageIcon(CheckinFrame.class.getResource("/img/EditarC.png")));
 		btnNewButtonEditReserve.setForeground(Color.WHITE);
 		btnNewButtonEditReserve.setBounds(6, 770, 172, 34);
 		add(btnNewButtonEditReserve);

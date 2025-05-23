@@ -9,7 +9,17 @@ import java.util.List;
 public class Conexao { // Adicionar senha e trocar a porta
     private static final String URL = "jdbc:mysql://localhost:3306/CHECKINPRO";
     private static final String USER = "root"; 
-    private static final String PASSWORD = "2424"; 
+    private static final String PASSWORD = "2424"; //2424
+    
+    public static Connection getConnection() {
+        try {
+            return DriverManager.getConnection(URL, USER, PASSWORD);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erro ao conectar ao banco de dados.");
+        }
+    }
+
 
 
     public static ResultSet executeQuery(String sql, List<Object> parametros) {

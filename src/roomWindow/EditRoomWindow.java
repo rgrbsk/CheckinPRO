@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.ArrayList;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 
 
 public class EditRoomWindow {
@@ -124,7 +125,8 @@ public class EditRoomWindow {
         MainPanelEditRoom.add(panelCustomFooter);
         panelCustomFooter.setLayout(null);
         
-        JButton btnConcluir = new JButton("Concluir");
+        JButton btnConcluir = new JButton("Adicionar");
+        btnConcluir.setIcon(new ImageIcon(EditRoomWindow.class.getResource("/img/Adicionar.png")));
         btnConcluir.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             	RoomUpdate();
@@ -133,7 +135,9 @@ public class EditRoomWindow {
         btnConcluir.setBounds(82, 14, 174, 37);
         panelCustomFooter.add(btnConcluir);
         
-        JButton btnApagar = new JButton("Apagar");
+        JButton btnApagar = new JButton("Limpar");
+        btnApagar.setIcon(new ImageIcon(EditRoomWindow.class.getResource("/img/icons8-pencil-eraser-30.png")));
+        btnApagar.setSelectedIcon(new ImageIcon(EditRoomWindow.class.getResource("/img/icons8-pencil-eraser-30.png")));
         btnApagar.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		cleanFields();
