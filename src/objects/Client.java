@@ -15,7 +15,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class Client {
-
     private int id;
     private String nome;
     private String sobrenome;
@@ -23,21 +22,30 @@ public class Client {
     private String email;
     private String telefone;
 
+ 
     public Client(int id, String nome, String sobrenome, String cpf, String email, String telefone) {
         if (nome == null || nome.isBlank()) {
             throw new IllegalArgumentException("Nome inválido.");
         }
         if (!validarCPF(cpf)) {
+        	
             throw new IllegalArgumentException("CPF inválido.");
         }
-        if (email == null || !email.matches("^[\\w\\.-]+@[\\w\\.-]+\\.\\w{2,}$")) {
+        System.out.println("Email recebido: " + email);
+        System.out.println("Telefonae recebido: " + telefone);
+        
+        if (email == null || !email.matches("^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[\\w-]+\\.)+[a-zA-Z]{2,6}$")) {
             throw new IllegalArgumentException("Email inválido.");
         }
-        if (telefone == null || telefone.isBlank()) {
+        telefone = telefone.replaceAll("[^0-9]", ""); 
+
+        if (telefone.isBlank() || telefone.length() < 8) { 
             throw new IllegalArgumentException("Telefone inválido.");
         }
-
-    	this.id = id;
+        
+        
+        
+        this.id = id;
         this.nome = nome;
         this.sobrenome = sobrenome;
         this.cpf = cpf;
@@ -45,11 +53,19 @@ public class Client {
         this.telefone = telefone;
     }
 
+   
+    public Client(int id) {
+        this.id = id;
+    }
+
+    
+
     @Override
     public String toString() {
-    	return "Client [id=" + id + ", nome=" + nome + ", sobrenome=" + sobrenome + ", cpf=" + cpf +
-    	           ", email=" + email + ", telefone=" + telefone + "]";
+        return "Client [id=" + id + ", nome=" + nome + ", sobrenome=" + sobrenome + ", cpf=" + cpf +
+               ", email=" + email + ", telefone=" + telefone + "]";
     }
+
 
     public int getId() {
         return id;
@@ -181,9 +197,49 @@ public class Client {
 		
 	}
 	
+	public static int contarTotalClientes() {
+	    String sql = "SELECT COUNT(*) FROM cliente";
+	    List<Object> parametros = new ArrayList<>();
+
+	    try (ResultSet rs = (ResultSet) Conexao.executeQuery(sql, parametros)) {
+	        if (rs.next()) {
+	            return rs.getInt(1); // ✅ Retorna o total de clientes
+	        }
+	    } catch (Exception e) {
+	        System.err.println("Erro ao contar clientes: " + e.getMessage());
+	        e.printStackTrace();
+	    }
+	    return 0;
+	}
+	
+	public static List<Client> loadGridClientes() {
+	    String sql = "SELECT * FROM cliente"; 
+	    List<Object> parametros = new ArrayList<>();
+	    List<Client> clientes = new ArrayList<>(); 
+
+	    try (ResultSet rs = (ResultSet) Conexao.executeQuery(sql, parametros)) {
+	        while (rs.next()) { // ✅ Itera sobre todos os clientes
+	            Client cliente = new Client(
+	                rs.getInt("id_cliente"), 
+	                rs.getString("nome"), 
+	                rs.getString("sobrenome"), 
+	                rs.getString("cpf"),
+	                rs.getString("email"),
+	                rs.getString("telefone")
+	            );
+	            clientes.add(cliente);
+	        }
+	    } catch (Exception e) {
+	        System.err.println("Erro ao carregar clientes: " + e.getMessage());
+	        e.printStackTrace();
+	    }
+
+	    return clientes;
+	}
+	
 	public static List<Client> buscarClientes(String filtro, String valor, String limitarRegString) {
 	    List<Client> clientes = new ArrayList<>();
-	    int limitarRegSql = 10; // Default limit
+	    int limitarRegSql = 10; 
 	    
 	    
 	    try {
@@ -239,7 +295,7 @@ public class Client {
 	                cliente = new Client(
 	                    rs.getInt("id_cliente"),
 	                    rs.getString("nome"),
-	                    rs.getString("sobrenome"), // ✅ Include this!
+	                    rs.getString("sobrenome"), 
 	                    rs.getString("cpf"),
 	                    rs.getString("email"),
 	                    rs.getString("telefone")
@@ -256,21 +312,67 @@ public class Client {
 
 
 	public static int excluirCliente(int clienteId) {
-		String sql = "DELETE FROM cliente WHERE id_cliente = ?";
-		List<Object> parametros = new ArrayList<>();
-		parametros.add(clienteId);
+	    
+	    String sqlCheck = "SELECT COUNT(*) FROM reserva WHERE id_cliente = ?";
+	    List<Object> parametrosCheck = new ArrayList<>();
+	    parametrosCheck.add(clienteId);
 
-		try {
-			int linhasAfetadas = Conexao.executeUpdate(sql, parametros);
-			System.out.println("Cliente excluído com sucesso! Linhas afetadas: " + linhasAfetadas);
-			return linhasAfetadas;
-		} catch (Exception e) {
-			System.err.println("Erro ao excluir cliente: " + e.getMessage());
-			JOptionPane.showMessageDialog(null, "Erro ao excluir cliente: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE); 
-			e.printStackTrace();
-			return 0;
-		}
+	    try {
+	        ResultSet rs = (ResultSet) Conexao.executeQuery(sqlCheck, parametrosCheck);
+	        if (rs.next() && rs.getInt(1) > 0) { 
+	            JOptionPane.showMessageDialog(null, "Não é possível excluir. O cliente possui reservas ativas!", "Aviso", JOptionPane.WARNING_MESSAGE);
+	            return 0; //rretorna 0 indicando que a exclusão não foi realizada
+	        }
+	    } catch (Exception e) {
+	        System.err.println("Erro ao verificar reservas do cliente: " + e.getMessage());
+	        e.printStackTrace();
+	        return 0;
+	    }
+
+	    //o cliente não tem reservas ativas
+	    String sqlDelete = "DELETE FROM cliente WHERE id_cliente = ?";
+	    List<Object> parametrosDelete = new ArrayList<>();
+	    parametrosDelete.add(clienteId);
+
+	    try {
+	        int linhasAfetadas = Conexao.executeUpdate(sqlDelete, parametrosDelete);
+	        System.out.println("Cliente excluído com sucesso! Linhas afetadas: " + linhasAfetadas);
+	        return linhasAfetadas;
+	    } catch (Exception e) {
+	        System.err.println("Erro ao excluir cliente: " + e.getMessage());
+	        JOptionPane.showMessageDialog(null, "Erro ao excluir cliente: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+	        e.printStackTrace();
+	        return 0;
+	    }
 	}
+	
+	public static List<Reserve> pesquisarHistoricoCliente(int clienteId) {
+	    String sql = "SELECT c.nome, r.id, r.data_checkin, r.data_checkout, r.status FROM reserva r "
+	               + "LEFT JOIN cliente c ON r.id_cliente = c.id_cliente WHERE c.id_cliente = ?";
+	    
+	    List<Object> parametros = new ArrayList<>();
+	    parametros.add(clienteId);
+	    List<Reserve> reservas = new ArrayList<>();
+
+	    try (ResultSet rs = (ResultSet) Conexao.executeQuery(sql, parametros)) {
+	        while (rs.next()) {
+	            Reserve reserva = new Reserve(
+	                rs.getInt("id"),
+	                rs.getString("data_checkin"),
+	                rs.getString("data_checkout"),
+	                new Room(rs.getInt("id")), //
+	                new Client(clienteId), // 
+	                false, false, false, 0.0, rs.getString("status") //
+	            );
+	            reservas.add(reserva);
+	        }
+	    } catch (Exception e) {
+	        System.err.println("Erro ao buscar histórico do cliente: " + e.getMessage());
+	        e.printStackTrace();
+	    }
+
+	    return reservas; 
+	}	
 
 	
 

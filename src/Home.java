@@ -152,6 +152,15 @@ public class Home extends JFrame {
         customBar2.setBounds(10, 205, 237, 2);
         panelMenu.add(customBar2);
         
+        JButton btnServios = new JButton("Serviços");
+        btnServios.setIcon(new ImageIcon("C:\\Users\\roger\\Desktop\\More.png"));
+        btnServios.setForeground(Color.WHITE);
+        btnServios.setFont(new Font("Dialog", Font.PLAIN, 19));
+        btnServios.setBorderPainted(false);
+        btnServios.setBackground(new Color(17, 193, 123));
+        btnServios.setBounds(10, 655, 237, 45);
+        panelMenu.add(btnServios);
+        
         JPanel customBar = new JPanel();
         customBar.setBackground(new Color(17, 193, 123));
         customBar.setBounds(0, 0, 1584, 4);

@@ -1,5 +1,6 @@
 package clienteWindow;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
 
@@ -36,6 +37,7 @@ public class AddClientWindow extends JFrame  {
 	public JLabel lblModoEdicao;
 	public JButton btnConcluirCadastro;
 	public static boolean isEditMode;
+	private JPanel panelImage;
 
 
 	/**
@@ -66,6 +68,7 @@ public class AddClientWindow extends JFrame  {
 	 */
 	private void initialize() {
 		System.out.println("Label reference: " + lblModoEdicao);
+		
 		
 
 		frameAddClient = new JFrame();
@@ -128,7 +131,7 @@ public class AddClientWindow extends JFrame  {
 		
 		JButton btnConcluirCadastro = new JButton("Salvar Cadastro");
 		btnConcluirCadastro.setVerticalAlignment(SwingConstants.BOTTOM);
-		btnConcluirCadastro.setIcon(new ImageIcon(AddClientWindow.class.getResource("/img/Adicionar.png")));
+		btnConcluirCadastro.setIcon(new ImageIcon(AddClientWindow.class.getResource("/img/Ok.png")));
 		btnConcluirCadastro.setBounds(82, 14, 174, 37);
 		panelCustomFooter.add(btnConcluirCadastro);
 		
@@ -149,18 +152,11 @@ public class AddClientWindow extends JFrame  {
 		lblEmail.setBounds(62, 297, 183, 16);
 		panelCadastro.add(lblEmail);
 		
-		JPanel panelAdicionais = new JPanel();
-		panelAdicionais.setLayout(null);
-		panelAdicionais.setBackground(new Color(70, 73, 75));
-		panelAdicionais.setBounds(307, 191, 211, 169);
-		panelCadastro.add(panelAdicionais);
-		
-		JLabel lblCamposObrigatrios = new JLabel("A definir");
-		lblCamposObrigatrios.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblCamposObrigatrios.setHorizontalAlignment(SwingConstants.CENTER);
-		lblCamposObrigatrios.setForeground(new Color(17, 193, 120));
-		lblCamposObrigatrios.setBounds(49, 75, 126, 16);
-		panelAdicionais.add(lblCamposObrigatrios);
+		panelImage = new JPanel();
+		panelImage.setLayout(null);
+		panelImage.setBackground(new Color(70, 73, 75));
+		panelImage.setBounds(307, 191, 211, 169);
+		panelCadastro.add(panelImage);
 		
 		JLabel lblTelefone = new JLabel("Telefone");
 		lblTelefone.setForeground(new Color(17, 193, 120));
@@ -209,7 +205,7 @@ public class AddClientWindow extends JFrame  {
 		lblId.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		
 		
-		
+		setarImagemNoPanel();
 ;
 
 		
@@ -270,6 +266,18 @@ public class AddClientWindow extends JFrame  {
 
 	public JFrame getFrame() {
 	    return frameAddClient;
+	}
+	
+	public void setarImagemNoPanel() {
+
+	    ImageIcon icon = new ImageIcon(getClass().getResource("/img/Customer.png")); // 🔥 Altere o caminho da imagem
+
+	    JLabel labelImagem = new JLabel(icon);
+
+	    panelImage.setLayout(new BorderLayout()); // Ajusta layout para encaixar a imagem
+	    panelImage.add(labelImagem, BorderLayout.CENTER);
+	    panelImage.revalidate();
+	    panelImage.repaint();
 	}
 
 	public void preencherCampos(Client cliente) {

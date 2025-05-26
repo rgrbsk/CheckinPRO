@@ -54,8 +54,10 @@ public class CheckinFrame extends JPanel {
 		panel.setBackground(Color.DARK_GRAY);
 		panel.setBounds(6, 6, 1292, 28);
 		add(panel);
+		panel.setLayout(null);
 		
 		txtCheckin = new JTextField();
+		txtCheckin.setBounds(576, 5, 140, 24);
 		txtCheckin.setBorder(null);
 		txtCheckin.setAutoscrolls(false);
 		txtCheckin.setEditable(false);

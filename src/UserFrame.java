@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import objects.Client;
+import objects.Reserve;
 
 import java.awt.Color;
 import javax.swing.JLabel;
@@ -19,6 +20,7 @@ import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 
 import clienteWindow.AddClientWindow;
+import clienteWindow.ClientHistoricWindow;
 
 import javax.swing.AbstractButton;
 import javax.swing.ImageIcon;
@@ -36,25 +38,29 @@ public class UserFrame extends JPanel {
 	private JTextField txtClientes;
 	private JTextField textConteudoPesquisa;
 	private JTable tabelaClientes;
+	private JLabel lblTotalClientes; // ✅ Declaração correta
 
 	private DefaultTableModel modelTable;
 	private JTextField txtClientes_1;
-
+	private JTextField textField;
+	private JTable tabelaCliente; // Declare at class level
+	
 	/**
 	 
 	 */
 	public UserFrame() {
+		
 		setBackground(new Color(55, 55, 55));
 		// Initialize table model correctly
 	    modelTable = new DefaultTableModel(
 	        new Object[][] {}, 
 	        new String[] {"ID", "Nome", "CPF", "Email", "Telefone"}
+	        
 	    );
 	    
-	    tabelaClientes = new JTable(modelTable); // Ensure JTable is initialized properly
-
-		
-		
+	    tabelaClientes = new JTable(); // Ensure JTable is initialized properly
+	   
+	 
 		setBounds(0, 0, 1304, 845);
 		setLayout(null);
 		
@@ -62,8 +68,10 @@ public class UserFrame extends JPanel {
 		panel.setBounds(6, 6, 1292, 28);
 		panel.setBackground(Color.DARK_GRAY);
 		add(panel);
+		panel.setLayout(null);
 		
 		txtClientes_1 = new JTextField();
+		txtClientes_1.setBounds(576, 5, 140, 24);
 		txtClientes_1.setText("Clientes");
 		txtClientes_1.setHorizontalAlignment(SwingConstants.CENTER);
 		txtClientes_1.setForeground(new Color(17, 193, 123));
@@ -73,6 +81,8 @@ public class UserFrame extends JPanel {
 		txtClientes_1.setBorder(null);
 		txtClientes_1.setBackground(Color.DARK_GRAY);
 		panel.add(txtClientes_1);
+		
+	
 		
 		txtClientes = new JTextField();
 		txtClientes.setText("Clientes");
@@ -102,21 +112,13 @@ public class UserFrame extends JPanel {
 			    new String[] {"ID", "Nome", "CPF", "Email", "Telefone"} // Update column names if needed
 			);
 
-			// Assign the model **AFTER** initializing it
-			tabelaClientes = new JTable(modelTable);
-
-
-		tabelaClientes = new JTable();
-		tabelaClientes.setShowHorizontalLines(true); 
-
-
-		
 	
-		
 		JScrollPane scrollPane = new JScrollPane(tabelaClientes);
 		scrollPane.setEnabled(false);
-		scrollPane.setBounds(6, 122, 1280, 620);
+		scrollPane.setBounds(6, 121, 1280, 620);
 		add(scrollPane);
+		tabelaClientes.setShowGrid(true); 
+
 
 		
 		JButton btnNewButtonRefresh = new JButton("");
@@ -142,16 +144,19 @@ public class UserFrame extends JPanel {
 		lblNewLabel.setBounds(89, 23, 140, 14);
 		panelCustomFooter.add(lblNewLabel);
 		
+		
 		JLabel lblNewLabel_1 = new JLabel("Exibindo no Grid:");
 		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		lblNewLabel_1.setBounds(359, 23, 108, 14);
 		panelCustomFooter.add(lblNewLabel_1);
 		
-		JLabel lblTotalClientes = new JLabel("-");
+		lblTotalClientes = new JLabel();
 		lblTotalClientes.setForeground(Color.GREEN);
 		lblTotalClientes.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		lblTotalClientes.setBounds(239, 23, 66, 14);
 		panelCustomFooter.add(lblTotalClientes);
+		atualizarTotalClientes(); // ✅ Agora pode ser chamado!
+
 		
 		JLabel lblTotalGrid = new JLabel("-");
 		lblTotalGrid.setForeground(Color.GREEN);
@@ -165,11 +170,11 @@ public class UserFrame extends JPanel {
 		comboLimitarReg.setToolTipText("");
 		comboLimitarReg.setBounds(1081, 800, 83, 34);
 		add(comboLimitarReg);
-		comboLimitarReg.addItem("100");
-		comboLimitarReg.addItem("10");
+		comboLimitarReg.addItem("1000");
 		comboLimitarReg.addItem("20");
 		comboLimitarReg.addItem("50");
-		comboLimitarReg.addItem("1000");
+		comboLimitarReg.addItem("100");
+		comboLimitarReg.addItem("120");
 		comboLimitarReg.setVisible(false);
 		
 		JComboBox comboFiltro = new JComboBox();
@@ -209,6 +214,11 @@ public class UserFrame extends JPanel {
 		label.setBounds(667, 6, 52, 16);
 		add(label);
 		
+		JButton btnVerHistorico = new JButton("Histórico");
+		btnVerHistorico.setIcon(new ImageIcon(UserFrame.class.getResource("/img/Bookmark.png")));
+		btnVerHistorico.setBounds(192, 66, 172, 34);
+		add(btnVerHistorico);
+		carregarClientesNoGrid();
 		
 		
 		checkPerformance.addActionListener(e -> {
@@ -220,6 +230,10 @@ public class UserFrame extends JPanel {
 		        comboLimitarReg.setVisible(false);
 		    }
 		});
+		
+		carregarClientesNoGrid();
+		
+		
 		//gatilhos e Listeners para acionar botões, aq.
 		btnCadastrarCliente.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
@@ -234,17 +248,23 @@ public class UserFrame extends JPanel {
 		btnSearchResults.addActionListener(new ActionListener() {
 		    @Override
 		    public void actionPerformed(ActionEvent e) {
+		        
 		        String filtroSelecionado = comboFiltro.getSelectedItem().toString();
 		        String conteudoPesquisa = textConteudoPesquisa.getText().trim();
-		        String limitarRegString = comboLimitarReg.getSelectedItem().toString().trim();
-		        Integer limitarRegSql = Integer.parseInt(limitarRegString);
-		        if (limitarRegSql >= 1000) {
-		        	lblMaxRegistros.setVisible(true);
-		        	limitarRegSql = 1000; //máximo
+
+		        String limitarRegString = (comboLimitarReg.getSelectedItem() != null && 
+		                                   !comboLimitarReg.getSelectedItem().toString().trim().isEmpty())
+		                                   ? comboLimitarReg.getSelectedItem().toString().trim()
+		                                   : "1000";
+
+		        int limitarRegSql;
+		        try {
+		            limitarRegSql = Integer.parseInt(limitarRegString);
+		        } catch (Exception ex) {
+		            limitarRegSql = 1000; // valor padrão
 		        }
-		        else {
-		        	lblMaxRegistros.setVisible(false);
-		        }
+
+		        lblMaxRegistros.setVisible(limitarRegSql >= 1000);
 
 		        Map<String, String> columnMap = new HashMap<>();
 		        columnMap.put("Nome", "nome");
@@ -252,17 +272,16 @@ public class UserFrame extends JPanel {
 		        columnMap.put("E-mail", "email");
 
 		        String filtroReal = columnMap.getOrDefault(filtroSelecionado, "nome");
-		        
 
 		        List<Client> clientesEncontrados = Client.buscarClientes(filtroReal, conteudoPesquisa, limitarRegString);
-		        String clientesGrid =  clientesEncontrados.toString();
-		        System.out.println(clientesGrid);
+
+		        System.out.println(clientesEncontrados);
 		        System.out.println("Filter used: " + filtroReal);
 		        System.out.println("Search term: " + conteudoPesquisa);
 		        System.out.println("Total clients found: " + clientesEncontrados.size());
-		        lblTotalGrid.setText(String.valueOf(clientesEncontrados.size()));
 
-		        modelTable.setRowCount(0); // Clears previous results
+		        lblTotalGrid.setText(String.valueOf(clientesEncontrados.size()));
+		        modelTable.setRowCount(0); // Limpa resultados anteriores
 
 		        for (Client cliente : clientesEncontrados) {
 		            modelTable.addRow(new Object[]{
@@ -274,11 +293,11 @@ public class UserFrame extends JPanel {
 		            });
 		        }
 
-		        tabelaClientes.setModel(modelTable); // Ensure table is properly linked
-		        
-		   
+		        tabelaClientes.setModel(modelTable);
+		        atualizarTotalClientes();
 		    }
 		});
+
 		btnExcluirCadastro.addActionListener(new ActionListener() {
 		    @Override
 		    public void actionPerformed(ActionEvent e) {
@@ -315,10 +334,43 @@ public class UserFrame extends JPanel {
 		                JOptionPane.showMessageDialog(null, "Erro ao excluir cliente.");
 		            }
 		        } else {
-		            JOptionPane.showMessageDialog(null, "Exclusão cancelada."); // ✅ Properly handled
+		            JOptionPane.showMessageDialog(null, "Exclusão cancelada.");
 		        }
 		    }
 		});
+		
+		btnVerHistorico.addActionListener(new ActionListener() {
+		    @Override
+		    public void actionPerformed(ActionEvent e) {
+		    	int selectedRow = tabelaClientes.getSelectedRow(); // ✅ Obtém a linha realmente selecionada pelo usuário
+
+		        if (selectedRow == -1) { // ✅ Verifica se há uma seleção válida
+		            JOptionPane.showMessageDialog(null, "Nenhum cliente disponível!", "Aviso", JOptionPane.WARNING_MESSAGE);
+		            return;
+		        }
+
+		    
+		        int clienteId = Integer.parseInt(modelTable.getValueAt(selectedRow, 0).toString()); 
+		        String nome = modelTable.getValueAt(selectedRow, 1).toString(); 
+		        String cpf = modelTable.getValueAt(selectedRow, 2).toString();
+		        String email = modelTable.getValueAt(selectedRow, 3).toString(); 
+		        String telefone = modelTable.getValueAt(selectedRow, 4).toString();
+
+		        Client cliente = new Client(clienteId, nome, "", cpf, email, telefone); 
+
+		       
+		        ClientHistoricWindow historic = new ClientHistoricWindow(cliente);
+		        historic.getFrame().setVisible(true);
+		    }
+		});
+		
+		//public void atualizarTotalClientes() {
+		    //int totalClientes = Client.contarTotalClientes(); 
+		    //lblTotalClientes.setText(String.valueOf(totalClientes)); 
+		//}
+		
+
+		
 		
 		btnEditarCadastro.addActionListener(new ActionListener() {
 		    @Override
@@ -329,14 +381,13 @@ public class UserFrame extends JPanel {
 		        if (selectedRow != -1) {
 		            int clienteId = (int) modelTable.getValueAt(selectedRow, 0);
 
-		            // Debugging para confirmar
+		           //r
 		            System.out.println("Cliente selecionado: " + clienteId);
 
-		            // Buscar os dados do cliente pelo ID
 		            Client cliente = Client.buscarClientePorId(clienteId);
 
 		            if (cliente != null) {
-		                // Abrir AddClientWindow e preencher os campos
+		                
 		                AddClientWindow addClient = new AddClientWindow();
 		                addClient.preencherCampos(cliente); // Método para preencher os campos com os dados
 		                addClient.getFrame().setVisible(true);
@@ -349,11 +400,38 @@ public class UserFrame extends JPanel {
 		        }
 		    }
 		});
+		
+	}
+		
+	public void atualizarTotalClientes() {
+	    if (lblTotalClientes == null) { // ✅ Evita erro caso `lblTotalClientes` ainda não tenha sido inicializado
+	        System.err.println("Erro: lblTotalClientes não foi inicializado!");
+	        return;
+	    }
+
+	    int totalClientes = Client.contarTotalClientes(); 
+	    lblTotalClientes.setText(String.valueOf(totalClientes));
+	}
+	
+	public void carregarClientesNoGrid() {
+	    List<Client> clientes = Client.loadGridClientes(); 
+
+	    modelTable.setRowCount(0); //
+
+	    for (Client cliente : clientes) {
+	        modelTable.addRow(new Object[]{
+	            cliente.getId(),
+	            cliente.getNome(),
+	            cliente.getCpf(),
+	            cliente.getEmail(),
+	            cliente.getTelefone()
+	        });
+	    }
 	}
 
-		
+
 		private void loadClientData() {
-		    modelTable.setRowCount(0); // Clear existing rows
+		    modelTable.setRowCount(0); 
 
 		    List<Client> clientes = Client.buscarClientes("nome", "", "");
 
@@ -364,7 +442,9 @@ public class UserFrame extends JPanel {
 		                cliente.getTelefone()});
 		    }
 
-		    tabelaClientes.setModel(modelTable); // Ensure JTable is correctly linked
+		    tabelaClientes.setModel(modelTable); 
 
 		}
+		
+		
 }

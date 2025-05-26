@@ -49,8 +49,10 @@ public class RoomFrame extends JPanel {
         panel.setBackground(Color.DARK_GRAY);
         panel.setBounds(6, 6, 1292, 28);
         add(panel);
+        panel.setLayout(null);
 
         txtQuartos = new JTextField();
+        txtQuartos.setBounds(576, 5, 140, 24);
         txtQuartos.setText("Quartos");
         txtQuartos.setHorizontalAlignment(SwingConstants.CENTER);
         txtQuartos.setForeground(new Color(17, 193, 123));

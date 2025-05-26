@@ -8,6 +8,16 @@ import java.util.List;
 import conexao.Conexao;
 
 public class Room {
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+
+	private int id;
     private int numero;
     private String tipo;
     private String descricao;
@@ -17,8 +27,10 @@ public class Room {
     private int camas;
     private int andar;
 
-    public Room(int numero, String tipo, String descricao, int capacidade, int preco_diaria, 
+    // ✅ Existing constructor (Full object initialization)
+    public Room(int id, int numero, String tipo, String descricao, int capacidade, int preco_diaria, 
                 String status, int camas, int andar) {
+        this.id = id;
         this.numero = numero;
         this.tipo = tipo;
         this.descricao = descricao;
@@ -28,6 +40,12 @@ public class Room {
         this.camas = camas;
         this.andar = andar;
     }
+
+    // ✅ New constructor (Only ID)
+    public Room(int id) {
+        this.id = id;
+    }
+
 
     // Getters e Setters
     public int getNumero() {

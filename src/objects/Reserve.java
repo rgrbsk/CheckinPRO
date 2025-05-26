@@ -1,11 +1,17 @@
 package objects;
 
+import java.awt.event.ActionEvent;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 import conexao.Conexao;
 
@@ -268,6 +274,34 @@ public class Reserve {
 			
 		}
 		
+		public static void pesquisarReservasCheckout(DefaultTableModel modelTable, JTable tabelaReservas) {
+		    modelTable.setRowCount(0); // Clear previous data
+
+		    try (Connection conn = Conexao.getConnection()) {
+		        String sql = "SELECT r.id, c.nome, r.data_checkin, r.data_checkout, r.id_quarto FROM reserva r "
+		                   + "LEFT JOIN cliente c ON r.id_cliente = c.id_cliente";
+
+		        try (PreparedStatement stmt = conn.prepareStatement(sql);
+		             ResultSet rs = stmt.executeQuery()) {
+
+		            while (rs.next()) {
+		                modelTable.addRow(new Object[]{
+		                    rs.getInt("id"),
+		                    rs.getString("nome"), // Fix alias for 'c.nome'
+		                    rs.getDate("data_checkin"),
+		                    rs.getDate("data_checkout"),
+		                    rs.getInt("id_quarto")
+		                });
+		            }
+		        }
+		    } catch (SQLException ex) {
+		        ex.printStackTrace();
+		    }
+
+		    tabelaReservas.setModel(modelTable); // ✅ Refresh table
+		}
+		
+		
 	
 	
     public class Filter {
@@ -379,6 +413,11 @@ public class Reserve {
         }
     
     	}
+
+
+
+
+	
 
 
 
