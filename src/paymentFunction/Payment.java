@@ -1,6 +1,5 @@
 package paymentFunction;
 
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -93,9 +92,24 @@ public class Payment {
             e.printStackTrace();
             return 0;
         }}
+
+	public static int alterarStatus(int id, String novoStatus) {
+        String sql = "UPDATE pagamento SET status_pagamento = ? WHERE id = ?";
+        List<Object> params = new ArrayList<>();
+        
+        params.add(novoStatus);
+        params.add(id);
+        
+        try {
+            int rowsAffected = Conexao.executeUpdate(sql, params);
+            return rowsAffected;
+        } catch (Exception e) {
+            System.err.println("Erro ao alterar status do pagamento: " + e.getMessage());
+            e.printStackTrace();
+            return 0;
+        }
 	
 	
-	
-		
+	}
 	}
 
