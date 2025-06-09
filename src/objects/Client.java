@@ -60,6 +60,8 @@ public class Client {
 		super();
 		this.id = id;
 	}
+	
+	
 
 	@Override
 	public String toString() {
@@ -336,29 +338,28 @@ public class Client {
 	}
 
 	public static List<Reserve> pesquisarHistoricoCliente(int clienteId) {
-		String sql = "SELECT c.nome, r.id, r.data_checkin, r.data_checkout, r.status FROM reserva r "
-				+ "LEFT JOIN cliente c ON r.id_cliente = c.id_cliente WHERE c.id_cliente = ?";
+	    String sql = "SELECT c.nome, r.id, r.data_checkin, r.data_checkout, r.status, r.id_quarto, r.valor, r.quantidade_pessoas "
+	               + "FROM reserva r LEFT JOIN cliente c ON r.id_cliente = c.id_cliente WHERE c.id_cliente = ?";
 
-		List<Object> parametros = new ArrayList<>();
-		parametros.add(clienteId);
-		List<Reserve> reservas = new ArrayList<>();
-		Client clientName = null;
-		try (ResultSet rs = (ResultSet) Conexao.executeQuery(sql, parametros)) {
-			while (rs.next()) {
-				Reserve reserva = new Reserve(rs.getInt("id_reserva"), rs.getString("data_checkin"),
-						rs.getString("data_checkout"), new Room(rs.getInt("id_quarto")),
-						new Client(rs.getInt("id_cliente")), rs.getDouble("valor"), rs.getString("status"),
-						rs.getInt("quantidade_pessoas"), clientName
+	    List<Object> parametros = new ArrayList<>();
+	    parametros.add(clienteId);
+	    List<Reserve> reservas = new ArrayList<>();
 
-				);
-				reservas.add(reserva);
-			}
-		} catch (Exception e) {
-			System.err.println("Erro ao buscar histórico do cliente: " + e.getMessage());
-			e.printStackTrace();
-		}
+	    try (ResultSet rs = (ResultSet) Conexao.executeQuery(sql, parametros)) {
+	        while (rs.next()) {
+	            Client clientName = new Client(rs.getInt("id")); // ✅ Fixed
+	            Reserve reserva = new Reserve(rs.getInt("id"), rs.getString("data_checkin"),
+	                                          rs.getString("data_checkout"), new Room(rs.getInt("id_quarto")),
+	                                          clientName, rs.getDouble("valor"), rs.getString("status"),
+	                                          rs.getInt("quantidade_pessoas"), clientName); // ✅ Fixed parameter order
+	            reservas.add(reserva);
+	        }
+	    } catch (Exception e) {
+	        System.err.println("Erro ao buscar histórico do cliente: " + e.getMessage());
+	        e.printStackTrace();
+	    }
 
-		return reservas;
+	    return reservas;
 	}
 
 }

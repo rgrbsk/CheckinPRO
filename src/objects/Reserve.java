@@ -1,6 +1,7 @@
 package objects;
 
 import java.awt.event.ActionEvent;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,15 +18,48 @@ import conexao.Conexao;
 
 public class Reserve {
 
+	
+
+	public int getNumero() {
+	    return numero.getNumero(); 
+	}
+
+
+	public void setNumero(Room numero) {
+		this.numero = numero;
+	}
+
 	private int id;
 	private String checkinDate;
 	private String checkoutDate;
 	private Room id_Room;
+	private Room numero;
 	private Client id_client;
 	private double valorTotal;
 	private String status;
 	private int numberOfClient;
 	private Client clientName;
+	private Client cliente;
+	private String room;
+	private int numero_quarto;
+	private Date dataCheckin;
+    private Date dataCheckout;
+
+	public Reserve(int id, int numero_quarto, Client cliente) {
+		this.id = id;
+        this.numero_quarto = numero_quarto; // ✅ Passamos o número diretamente
+        this.cliente = cliente;
+
+	}
+	
+
+	public void setNumero_quarto(int numero_quarto) {
+		this.numero_quarto = numero_quarto;
+	}
+	
+	public int getNumero_quarto() {
+		return numero_quarto;
+	}
 
 	public int getId() {
 		return id;
@@ -98,6 +132,12 @@ public class Reserve {
 	public void setClientName(Client clientName) {
 		this.clientName = clientName;
 	}
+	
+	
+    public Client getCliente() {
+        return cliente;
+    }
+
 
 	public Reserve(int id, String checkinDate, String checkoutDate, Room id_Room, Client id_client, double valorTotal,
 			String status, int numberOfClient, Client clientName) {
@@ -112,7 +152,14 @@ public class Reserve {
 		this.numberOfClient = numberOfClient;
 		this.clientName = clientName;
 	}
-
+	
+	public Reserve(int id, Room id_Room, Client cliente) {
+	    this.id = id;
+	    this.id_Room = id_Room;
+	    this.cliente = cliente;
+	    //this.numero_quarto = String.valueOf(id_Room.getNumero()); // ✅ Properly a
+	}
+	
 	@Override
 	public String toString() {
 		return "Reserve [id=" + id + ", checkinDate=" + checkinDate + ", checkoutDate=" + checkoutDate + ", id_Room="
@@ -207,7 +254,7 @@ public class Reserve {
 	}
 
 	public static int cancelarEntrada(int id) {
-		String sql = "DELETE FROM reserva WHERE ID = ?";
+		String sql = "UPDATE reserva r set r.status = 'Cancelada' WHERE ID = ?";
 		List<Object> params = new ArrayList<>();
 		params.add(id);
 		try {
@@ -221,12 +268,36 @@ public class Reserve {
 		return 0;
 	}
 
+	public static Reserve buscarReservaPorId(int reservaId) {
+	    String sql = "SELECT r.id, r.id_quarto, c.nome, c.cpf, DATEDIFF(r.data_checkout, r.data_checkin) AS numero_diarias FROM reserva r " +
+	                 "JOIN cliente c ON r.id_cliente = c.id_cliente WHERE r.id = ?";
+
+	    List<Object> parametros = new ArrayList<>();
+	    parametros.add(reservaId);
+
+	    try (ResultSet rs = Conexao.executeQuery(sql, parametros)) {
+	        if (rs.next()) {
+	            Client cliente = new Client(rs.getString("nome"), rs.getString("cpf"));
+	            int numeroQuarto = rs.getInt("id_quarto");
+	           
+
+	            return new Reserve(rs.getInt("id"), numeroQuarto, cliente);
+	        }
+	    } catch (Exception e) {
+	        System.err.println("Erro ao buscar reserva: " + e.getMessage());
+	        e.printStackTrace();
+	    }
+
+	    return null; 
+	}
+
+	
 	public static void pesquisarReservasCheckout(DefaultTableModel modelTable, JTable tabelaReservas) {
 		modelTable.setRowCount(0); // Clear previous data
 
 		try (Connection conn = Conexao.getConnection()) {
 			String sql = "SELECT r.id, c.nome, r.data_checkin, r.data_checkout, r.id_quarto FROM reserva r "
-					+ "LEFT JOIN cliente c ON r.id_cliente = c.id_cliente";
+					+ "LEFT JOIN cliente c ON r.id_cliente = c.id_cliente where r.status = 'Confirmada' ";
 
 			try (PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
 
@@ -252,7 +323,7 @@ public class Reserve {
 					+ "    r.data_checkout AS 'data checkout',\r\n" + "    r.status\r\n" + "FROM \r\n"
 					+ "    reserva r\r\n" + "INNER JOIN \r\n" + "    cliente c ON r.id_cliente = c.id_cliente\r\n"
 					+ "INNER JOIN \r\n" + "    quarto q ON r.id_quarto = q.id\r\n" + "WHERE \r\n"
-					+ "    q.status = 'Disponível' AND c.nome LIKE ? ;";
+					+ "    q.status = 'Disponível' AND c.nome LIKE ? AND r.status <> 'Cancelada' ;";
 
 		} else if (op.equals("CPF")) {
 			sql = "SELECT\r\n" + "    r.id AS id_reserva,\r\n" + "    c.nome,\r\n" + "    c.cpf,\r\n"
@@ -260,7 +331,7 @@ public class Reserve {
 					+ "    r.data_checkout AS 'data checkout',\r\n" + "    r.status\r\n" + "FROM \r\n"
 					+ "    reserva r\r\n" + "INNER JOIN \r\n" + "    cliente c ON r.id_cliente = c.id_cliente\r\n"
 					+ "INNER JOIN \r\n" + "    quarto q ON r.id_quarto = q.id\r\n" + "WHERE \r\n"
-					+ "    q.status = 'Disponível' AND c.cpf LIKE ? ;";
+					+ "    q.status = 'Disponível' AND c.cpf LIKE ? AND r.status <> 'Cancelada' ;";
 
 		} else if (op.equals("QUARTO")) {
 			sql = "SELECT\r\n" + "    r.id AS id_reserva,\r\n" + "    c.nome,\r\n" + "    c.cpf,\r\n"
@@ -268,7 +339,7 @@ public class Reserve {
 					+ "    r.data_checkout AS 'data checkout',\r\n" + "    r.status\r\n" + "FROM \r\n"
 					+ "    reserva r\r\n" + "INNER JOIN \r\n" + "    cliente c ON r.id_cliente = c.id_cliente\r\n"
 					+ "INNER JOIN \r\n" + "    quarto q ON r.id_quarto = q.id\r\n" + "WHERE \r\n"
-					+ "    q.status = 'Disponível' AND q.nmr_quarto LIKE ?;";
+					+ "    q.status = 'Disponível' AND q.nmr_quarto LIKE ? AND r.status <> 'Cancelada';";
 
 		} else if (op.equals("TODOS")) {
 			sql = "SELECT \r\n" + "    r.id AS id_reserva,\r\n" + "    c.nome,\r\n" + "    c.cpf,\r\n"
@@ -276,7 +347,7 @@ public class Reserve {
 					+ "    r.data_checkout AS 'data checkout',\r\n" + "    r.status\r\n" + "FROM \r\n"
 					+ "    reserva r\r\n" + "INNER JOIN \r\n" + "    cliente c ON r.id_cliente = c.id_cliente\r\n"
 					+ "INNER JOIN \r\n" + "    quarto q ON r.id_quarto = q.id\r\n" + "WHERE \r\n"
-					+ "    q.status = 'Disponível';";
+					+ "    q.status = 'Disponível' AND r.status <> 'Cancelada';";
 
 		}
 

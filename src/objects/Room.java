@@ -30,6 +30,10 @@ public class Room {
         this.camas = camas;
         this.andar = andar;
     }
+    
+    
+    
+    
 
     public int getId() {
         return id;
@@ -102,7 +106,7 @@ public class Room {
     public void setAndar(int andar) {
         this.andar = andar;
     }
-
+    
     @Override
     public String toString() {
         return "Room [numero=" + numero + ", tipo=" + tipo + ", descricao=" + descricao + 
