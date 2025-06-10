@@ -15,9 +15,13 @@ import java.sql.SQLException;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 
+import addServiceReserve.ServiceReserveWindow;
 import clienteWindow.AddClientWindow;
+import clienteWindow.ClientHistoricWindow;
 import conexao.Conexao;
+import objects.Client;
 import objects.Reserve;
+import paymentFunction.Payment;
 
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
@@ -26,6 +30,7 @@ import javax.swing.JTable;
 
 import java.awt.Component;
 import javax.swing.JComboBox;
+import javax.swing.JCheckBox;
 
 public class CheckoutFrame extends JPanel {
 
@@ -46,8 +51,8 @@ public class CheckoutFrame extends JPanel {
 		setLayout(null);
 		
 		JPanel panel = new JPanel();
-		panel.setBackground(Color.DARK_GRAY);
 		panel.setBounds(6, 6, 1292, 28);
+		panel.setBackground(Color.DARK_GRAY);
 		add(panel);
 		panel.setLayout(null);
 		
@@ -65,9 +70,9 @@ public class CheckoutFrame extends JPanel {
 		panel.add(txtCheckout);
 		
 		JButton btnConfirmarSaida = new JButton("Confirmar Saída");
+		btnConfirmarSaida.setBounds(6, 62, 172, 34);
 		btnConfirmarSaida.setIcon(new ImageIcon(CheckoutFrame.class.getResource("/img/Saida.png")));
 		btnConfirmarSaida.setForeground(Color.WHITE);
-		btnConfirmarSaida.setBounds(6, 62, 172, 34);
 		add(btnConfirmarSaida);
 		
 		String[] colunas = {"ID Reserva", "Nome Cliente", "Data Entrada", "Data Saída", "Quarto"};
@@ -76,46 +81,96 @@ public class CheckoutFrame extends JPanel {
 		JScrollPane scrollPaneCheckout = new JScrollPane(tabelaReservas);
 		scrollPaneCheckout.setBounds(6, 120, 1280, 616);
 		add(scrollPaneCheckout);
-		// ✅ Chamar pesquisa automaticamente ao abrir a tela
+	
 	    Reserve.pesquisarReservasCheckout(modelTable, tabelaReservas); // 🔥 Ago
 	    
-		JButton btnNewButtonEditReserve = new JButton("Editar Reserva");
-		btnNewButtonEditReserve.setIcon(new ImageIcon(CheckoutFrame.class.getResource("/img/EditarC.png")));
+		JButton btnNewButtonEditReserve = new JButton("Estornar Pagamento");
+
+		btnNewButtonEditReserve.setHorizontalAlignment(SwingConstants.LEFT);
+		btnNewButtonEditReserve.setBounds(198, 62, 193, 34);
+		btnNewButtonEditReserve.setIcon(new ImageIcon(CheckoutFrame.class.getResource("/img/Banknotes.png")));
 		btnNewButtonEditReserve.setForeground(Color.WHITE);
-		btnNewButtonEditReserve.setBounds(6, 772, 172, 34);
 		add(btnNewButtonEditReserve);
 		
-		JButton btnNewButtonDeleteReserve = new JButton("Cancelar Reserva");
-		btnNewButtonDeleteReserve.setIcon(new ImageIcon(CheckoutFrame.class.getResource("/img/Cancelar.png")));
-		btnNewButtonDeleteReserve.setForeground(Color.WHITE);
-		btnNewButtonDeleteReserve.setBounds(198, 772, 172, 34);
-		add(btnNewButtonDeleteReserve);
-		
-		JButton btnNewButtonRefresh = new JButton("");
-		btnNewButtonRefresh.setIcon(new ImageIcon(CheckoutFrame.class.getResource("/img/icons8-actualizar-30 (1).png")));
-		btnNewButtonRefresh.setForeground(Color.WHITE);
-		btnNewButtonRefresh.setBounds(1212, 772, 74, 34);
-		add(btnNewButtonRefresh);
-		
 		JButton btnNewButtonSearch = new JButton("");
-		btnNewButtonSearch.setIcon(new ImageIcon(CheckoutFrame.class.getResource("/img/icons8-pesquisar-30.png")));
 		btnNewButtonSearch.setBounds(837, 75, 64, 34);
+		btnNewButtonSearch.setIcon(new ImageIcon(CheckoutFrame.class.getResource("/img/icons8-pesquisar-30.png")));
 		add(btnNewButtonSearch);
 		
 		textField = new JTextField();
+		textField.setBounds(913, 75, 253, 34);
 		textField.setForeground(Color.WHITE);
 		textField.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		textField.setColumns(10);
-		textField.setBounds(913, 75, 253, 34);
 		add(textField);
 		
 		JComboBox<String> comboBoxFilter = new JComboBox<String>();
-		comboBoxFilter.setForeground(Color.WHITE);
 		comboBoxFilter.setBounds(1178, 75, 108, 34);
+		comboBoxFilter.setForeground(Color.WHITE);
 		add(comboBoxFilter);
 		
-		boolean pagamentoAtivo = false; // ✅ Variável para controlar instância de pagament
+		JPanel panelCustomFooter_1 = new JPanel();
+		panelCustomFooter_1.setLayout(null);
+		panelCustomFooter_1.setBackground(Color.DARK_GRAY);
+		panelCustomFooter_1.setBounds(6, 770, 1057, 64);
+		add(panelCustomFooter_1);
 		
+		JLabel lblReservaSelecionada = new JLabel("-");
+		lblReservaSelecionada.setForeground(Color.ORANGE);
+		lblReservaSelecionada.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblReservaSelecionada.setBounds(1209, 787, 108, 26);
+		add(lblReservaSelecionada);
+		
+		JLabel lblReservaSelecionada_1 = new JLabel("ID Reserva:");
+        lblReservaSelecionada_1.setForeground(Color.ORANGE);
+        lblReservaSelecionada_1.setFont(new Font("Tahoma", Font.PLAIN, 18));
+        lblReservaSelecionada_1.setBounds(1109, 787, 102, 26);
+        add(lblReservaSelecionada_1);
+		boolean pagamentoAtivo = false;
+		
+		tabelaReservas.getSelectionModel().addListSelectionListener(event -> {
+		    if (!event.getValueIsAdjusting()) { 
+		        int selectedRow = tabelaReservas.getSelectedRow();
+
+		        if (selectedRow == -1) { 
+		            selectedRow = 0; 
+		            System.out.println("Inicializando selectedRow = 0");
+		            return; 
+		        }
+
+		        int reservaId = (int) modelTable.getValueAt(selectedRow, 0); 
+		        lblReservaSelecionada.setText(String.valueOf(reservaId)); 
+		        ;
+		        JButton btnAdicionarServico = new JButton("Adicionar Serviço");
+		        btnAdicionarServico.addActionListener(new ActionListener() {
+		        	public void actionPerformed(ActionEvent e) {
+		        	}
+		        });
+		       
+		        
+
+		       //preencherCamposCheckout(reservaId); // ✅ Automatically fills checkout form
+		    }
+		});
+		
+        
+        JButton btnAddServicoReserva = new JButton("Adicionar Serviço");
+        btnAddServicoReserva.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		ServiceReserveWindow service = new ServiceReserveWindow();
+        		service.frameServiceReserve.setVisible(true);
+        	
+        	}
+        });
+        btnAddServicoReserva.setIcon(new ImageIcon(CheckoutFrame.class.getResource("/img/Bell32.png")));
+        btnAddServicoReserva.setHorizontalAlignment(SwingConstants.LEFT);
+        btnAddServicoReserva.setForeground(Color.WHITE);
+        btnAddServicoReserva.setBounds(416, 62, 172, 34);
+        add(btnAddServicoReserva);
+
+		
+		
+
 		
 	
 		
@@ -130,32 +185,47 @@ public class CheckoutFrame extends JPanel {
 		btnConfirmarSaida.addActionListener(new ActionListener() {
 		    @Override
 		    public void actionPerformed(ActionEvent e) {
-		        int selectedRow = tabelaReservas.getSelectedRow(); // pega id da bosta do grid, nao mexer senao da pau
-		        		        
-		        if (selectedRow == -1) { // se nao tiver nenhuma reserva selecionada, o usuario é burro
+		    	
+		        int selectedRow = tabelaReservas.getSelectedRow();
+
+		        if (selectedRow == -1) {
 		            JOptionPane.showMessageDialog(null, "Selecione corretamente uma reserva.", "Aviso", JOptionPane.WARNING_MESSAGE);
 		            return;
 		        }
 
-		        int reservaId = (int) modelTable.getValueAt(selectedRow, 0); // id da coluna 0
+		        int reservaId = (int) modelTable.getValueAt(selectedRow, 0);
 
 		        System.out.println("Reserva selecionada: ID " + reservaId);
+
 		        CheckoutModuleWindow window = new CheckoutModuleWindow();
-                window.frameAddReserve.setVisible(true);
-                btnConfirmarSaida.setEnabled(false);
+		        window.preencherCamposCheckout(reservaId); 
+		        window.frameCheckoutPayment.setVisible(true);
+		        
+		        
 		    }
 		});
+		btnNewButtonEditReserve.addActionListener(new ActionListener() {
+		    @Override
+		    public void actionPerformed(ActionEvent e) {
+		        int selectedRow = tabelaReservas.getSelectedRow();
 
+		        if (selectedRow == -1) { 
+		            JOptionPane.showMessageDialog(null, "Selecione corretamente uma reserva.", "Aviso", JOptionPane.WARNING_MESSAGE);
+		            return;
+		        }
 
+		        int reservaId = (int) modelTable.getValueAt(selectedRow, 0); 
+		        System.out.println("Reserva selecionada para alteração: ID " + reservaId);
+
+		        
+		        Reserve.pesquisarReservasCheckout(modelTable, tabelaReservas);
+
+		        JOptionPane.showMessageDialog(null, "Status do pagamento foi alterado!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+		    }
+		});
+		
 		
 
-				 
-		
-		
-		
-		
-		
-		
 		
 	}
 }

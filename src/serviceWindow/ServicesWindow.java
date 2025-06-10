@@ -98,12 +98,12 @@ public class ServicesWindow extends JPanel {
     	    // ✅ Checkout Panel
     	    JPanel checkoutPanel = new JPanel();
     	    checkoutPanel.setLayout(null);
-    	    tabbedPane.addTab("Checkout", checkoutPanel);
+    	    tabbedPane.addTab("Criar Serviço", checkoutPanel);
     	 // ✅ Create Consumption Panel
     	    JPanel consumptionPanel = new JPanel();
     	   
     	    consumptionPanel.setLayout(null);
-    	    tabbedPane.addTab("Consumo", consumptionPanel);
+    	    tabbedPane.addTab("Listar Serviços", consumptionPanel);
     	    // ✅ Add Table for Consumptions
     	    
     	    String[] colunasConsumo = {"Item", "Quantidade", "Valor Unitário", "Total"};
@@ -156,13 +156,7 @@ public class ServicesWindow extends JPanel {
     	    // ✅ Payment Panel
     	    JPanel paymentPanel = new JPanel();
     	    
-    	    paymentPanel.setLayout(null);
-    	    JLabel lblPagamento = new JLabel("Pagamento");
-    	    lblPagamento.setBounds(306, 5, 96, 14);
-    	    paymentPanel.add(lblPagamento);
-    	    tabbedPane.addTab("Pagamento", paymentPanel);
     	
-
     	   
 
     	    
