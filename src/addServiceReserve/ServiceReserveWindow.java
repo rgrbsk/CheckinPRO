@@ -16,29 +16,38 @@ public class ServiceReserveWindow extends JFrame {
     public JButton btnConcluirCadastro;
     public static boolean isEditMode;
     public JScrollPane scrollPaneServicesReserve;
-    private JTable tabelaServicos; // ✅ Atributo da tabela corretamente usado
-    private JTextField textField;
+    private JTable tabelaServicos;
+    private JTextField textQuantidadeServicos;
+    private int reservaId;
 
-    // Construtor com cliente
+ 
     public ServiceReserveWindow(Client cliente) {
         this.cliente = cliente;
         initialize();
-        carregarServicos(); // ✅ Carrega os serviços disponíveis na tabela
+        carregarServicos(); 
+    }
+    
+    public ServiceReserveWindow(int reservaId) {
+        this.reservaId = reservaId;
+        initialize();
+        carregarServicos();
     }
 
-    // Construtor padrão
+    
     public ServiceReserveWindow() {
         initialize();
-        carregarServicos(); // Também carrega para uso isolado
+        carregarServicos();
     }
 
-    // Inicialização da interface
+   
     private void initialize() {
         frameServiceReserve = new JFrame();
         frameServiceReserve.setTitle("CheckinPRO - 2025");
         frameServiceReserve.setBounds(100, 100, 617, 704);
         frameServiceReserve.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frameServiceReserve.getContentPane().setLayout(null);
+        
+        
 
         JPanel panel = new JPanel();
         panel.setLayout(null);
@@ -75,17 +84,17 @@ public class ServiceReserveWindow extends JFrame {
         panelCustomFooter.setBackground(Color.DARK_GRAY);
         panelCadastro.add(panelCustomFooter);
 
-        JButton btnCancelarCadastro = new JButton("Vincular");
-        btnCancelarCadastro.setIcon(new ImageIcon(ServiceReserveWindow.class.getResource("/img/Ok.png")));
-        btnCancelarCadastro.setBounds(253, 11, 174, 42);
-        panelCustomFooter.add(btnCancelarCadastro);
+        JButton btnVincularServico = new JButton("Vincular");
+        btnVincularServico.setIcon(new ImageIcon(ServiceReserveWindow.class.getResource("/img/Ok.png")));
+        btnVincularServico.setBounds(253, 11, 174, 42);
+        panelCustomFooter.add(btnVincularServico);
         
-        textField = new JTextField();
-        textField.setHorizontalAlignment(SwingConstants.CENTER);
-        textField.setFont(new Font("Tahoma", Font.PLAIN, 14));
-        textField.setBounds(146, 33, 86, 20);
-        panelCustomFooter.add(textField);
-        textField.setColumns(10);
+        textQuantidadeServicos = new JTextField();
+        textQuantidadeServicos.setHorizontalAlignment(SwingConstants.CENTER);
+        textQuantidadeServicos.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        textQuantidadeServicos.setBounds(146, 33, 86, 20);
+        panelCustomFooter.add(textQuantidadeServicos);
+        textQuantidadeServicos.setColumns(10);
         
         JLabel lblNewLabel = new JLabel("Quantidade");
         lblNewLabel.setForeground(Color.GREEN);
@@ -101,17 +110,45 @@ public class ServiceReserveWindow extends JFrame {
         // Tabela inicial vazia
         tabelaServicos = new JTable();
         scrollPaneServicesReserve.setViewportView(tabelaServicos);
-
-        // Ação do botão "Vincular"
-        btnCancelarCadastro.addActionListener(new ActionListener() {
+        
+        JLabel lblNewLabel_1 = new JLabel("New label");
+        scrollPaneServicesReserve.setColumnHeaderView(lblNewLabel_1);
+        
+        btnVincularServico.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent evt) {
-                frameServiceReserve.dispose();
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = tabelaServicos.getSelectedRow();
+
+                if (selectedRow != -1) {
+                    int idServico = (int) tabelaServicos.getValueAt(selectedRow, 0);
+                    int quantidadeServicos = textQuantidadeServicos.getText().isEmpty()
+                        ? 0
+                        : Integer.parseInt(textQuantidadeServicos.getText());
+                    if (textQuantidadeServicos.getText().isEmpty()) {
+                    
+						JOptionPane.showMessageDialog(frameServiceReserve,
+								"Por favor, insira a quantidade de serviços!", "Erro", JOptionPane.WARNING_MESSAGE);
+						return;
+					}
+
+                    try {
+                        Service service = new Service();
+                        service.AdicionarServicosReserva(idServico, quantidadeServicos, reservaId);
+                        JOptionPane.showMessageDialog(frameServiceReserve, "Serviço vinculado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(frameServiceReserve, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE); // ✅ Display error message
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(frameServiceReserve, "Selecione um serviço antes de vincular!", "Erro", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
     }
 
-    // Carrega os serviços do banco de dados na tabela
+       
+	    	
+
+ 
     public void carregarServicos() {
         List<Service> servicos = Service.buscarTodosServicos();
 
@@ -122,10 +159,11 @@ public class ServiceReserveWindow extends JFrame {
                 service.getId(), service.getDescricao(), service.getValor()
         }));
 
-        tabelaServicos.setModel(modelTable); // ✅ Atualiza o modelo da tabela
+        tabelaServicos.setModel(modelTable); 
         tabelaServicos.setShowGrid(true);
         tabelaServicos.setFillsViewportHeight(true);
     }
+    
 
     public JFrame getFrameHistoricoCliente() {
         return frameServiceReserve;
@@ -139,7 +177,7 @@ public class ServiceReserveWindow extends JFrame {
         return frameServiceReserve;
     }
 
-    // Método main para teste independente
+    // Método main para teste
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
             try {
@@ -149,5 +187,7 @@ public class ServiceReserveWindow extends JFrame {
                 e.printStackTrace();
             }
         });
+       
     }
+  
 }
