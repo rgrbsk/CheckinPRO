@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
@@ -21,6 +22,7 @@ import clienteWindow.ClientHistoricWindow;
 import conexao.Conexao;
 import objects.Client;
 import objects.Reserve;
+import objects.Service;
 import paymentFunction.Payment;
 
 import javax.swing.JButton;
@@ -39,6 +41,7 @@ public class CheckoutFrame extends JPanel {
 	private JTextField textField;
 	private JTable tabelaReservas;
 	private DefaultTableModel modelTable;
+	public int reservaId;
 
 	/**
 	 * Create the panel.
@@ -71,7 +74,7 @@ public class CheckoutFrame extends JPanel {
 		
 		JButton btnConfirmarSaida = new JButton("Confirmar Saída");
 		btnConfirmarSaida.setBounds(6, 62, 172, 34);
-		btnConfirmarSaida.setIcon(new ImageIcon(CheckoutFrame.class.getResource("/img/Saida.png")));
+		btnConfirmarSaida.setIcon(new ImageIcon("C:\\Users\\roger\\Desktop\\Share.png"));
 		btnConfirmarSaida.setForeground(Color.WHITE);
 		add(btnConfirmarSaida);
 		
@@ -81,6 +84,7 @@ public class CheckoutFrame extends JPanel {
 		JScrollPane scrollPaneCheckout = new JScrollPane(tabelaReservas);
 		scrollPaneCheckout.setBounds(6, 120, 1280, 616);
 		add(scrollPaneCheckout);
+		tabelaReservas.setShowGrid(true); 
 	
 	    Reserve.pesquisarReservasCheckout(modelTable, tabelaReservas); // 🔥 Ago
 	    
@@ -128,6 +132,22 @@ public class CheckoutFrame extends JPanel {
         add(lblReservaSelecionada_1);
 		boolean pagamentoAtivo = false;
 		
+		
+		tabelaReservas.getSelectionModel().addListSelectionListener(event -> {
+		    if (!event.getValueIsAdjusting()) { 
+		        int selectedRow = tabelaReservas.getSelectedRow();
+
+		        if (selectedRow != -1) {
+		            reservaId = (int) modelTable.getValueAt(selectedRow, 0); 
+		            lblReservaSelecionada.setText(String.valueOf(reservaId)); 
+		        }
+		    }
+		});
+		
+		Reserve reserva = new Reserve(reservaId);
+		
+	
+		
 		tabelaReservas.getSelectionModel().addListSelectionListener(event -> {
 		    if (!event.getValueIsAdjusting()) { 
 		        int selectedRow = tabelaReservas.getSelectedRow();
@@ -149,7 +169,6 @@ public class CheckoutFrame extends JPanel {
 		       
 		        
 
-		       //preencherCamposCheckout(reservaId); // ✅ Automatically fills checkout form
 		    }
 		});
 		
@@ -157,8 +176,9 @@ public class CheckoutFrame extends JPanel {
         JButton btnAddServicoReserva = new JButton("Adicionar Serviço");
         btnAddServicoReserva.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		ServiceReserveWindow service = new ServiceReserveWindow();
-        		service.frameServiceReserve.setVisible(true);
+        		  ServiceReserveWindow serviceWindow = new ServiceReserveWindow(reservaId); 
+        	        serviceWindow.frameServiceReserve.setVisible(true);
+
         	
         	}
         });
@@ -174,11 +194,11 @@ public class CheckoutFrame extends JPanel {
 		
 	
 		
-		//gatilhos e Listeners para acionar botões, aq - add commit.
+	
 		btnNewButtonSearch.addActionListener(new ActionListener() {
 		    @Override
 		    public void actionPerformed(ActionEvent e) {
-		        Reserve.pesquisarReservasCheckout(modelTable, tabelaReservas); // chmar metodo dentro do objeto Re
+		        Reserve.pesquisarReservasCheckout(modelTable, tabelaReservas); 
 		    }
 		});
 

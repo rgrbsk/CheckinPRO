@@ -160,6 +160,12 @@ public class Reserve {
 	    //this.numero_quarto = String.valueOf(id_Room.getNumero()); // ✅ Properly a
 	}
 	
+	 public Reserve(int idReserva) {
+	        this.id = id;
+	        
+	    }
+
+	
 	@Override
 	public String toString() {
 		return "Reserve [id=" + id + ", checkinDate=" + checkinDate + ", checkoutDate=" + checkoutDate + ", id_Room="

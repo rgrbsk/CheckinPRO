@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,12 +19,14 @@ public class Service {
         
     }
     
-    // Construtor adicionado
+   
     public Service(int id, String descricao, float valor) {
         this.id = id;
         this.descricao = descricao;
         this.valor = valor;
     }
+    
+  
     
     public int getId() {
         return id;
@@ -66,13 +69,12 @@ public class Service {
 
         try (Connection conn = Conexao.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) { // ✅ Executa a query sem parâmetros
-
+             ResultSet rs = stmt.executeQuery()) { 
             while (rs.next()) {
                 Service service = new Service(
                     rs.getInt("id_servico"),
                     rs.getString("descricao"),
-                    rs.getFloat("valor") // ✅ Certifique-se que o tipo está correto
+                    rs.getFloat("valor") 
                 );
                 result.add(service);
             }
@@ -83,6 +85,39 @@ public class Service {
         }
 
         return result; 
+    }
+    public static int AdicionarServicosReserva(int idServico, int quantidadeServicos, int reservaId) throws Exception {
+        String sql = "INSERT INTO reserva_servico (id_servico, quantidade, reservas_id) VALUES (?, ?, ?)";
+        
+        try (Connection conn = Conexao.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            // Define os valores na query
+            stmt.setInt(1, idServico);
+            stmt.setInt(2, quantidadeServicos);
+            stmt.setInt(3, reservaId);
+
+            // Executa a query de inserção
+            int rowsAffected = stmt.executeUpdate();
+            
+            // Verifica se a inserção ocorreu e retorna o ID gerado
+            if (rowsAffected > 0) {
+            	
+                try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        return generatedKeys.getInt(1);
+                    }
+                }
+            }
+
+        } catch (SQLException e) {
+        	
+            System.err.println("Erro ao adicionar serviço à reserva: " + e.getMessage());
+            e.printStackTrace();
+            throw new Exception("Erro ao vincular: " + e.getMessage()); 
+        }
+        
+        return -1; 
     }
      
     public static List<Service> filter() {
@@ -95,7 +130,7 @@ public class Service {
                 Service service = new Service(
                     rs.getInt("id_servico"),
                     rs.getString("descricao"),
-                    rs.getFloat("valor") // Alterado para getFloat
+                    rs.getFloat("valor") 
                 );
                 result.add(service);
             }
@@ -117,5 +152,9 @@ public class Service {
             System.err.println("Erro ao deletar quarto: " + e.getMessage());
             e.printStackTrace();
             return 0;
-        }}}
+        }}
+}
+
+
+	
     
