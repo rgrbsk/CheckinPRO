@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 
+import addServiceReserve.ServiceReserveWindow;
 import clienteWindow.AddClientWindow;
 import clienteWindow.ClientHistoricWindow;
 import conexao.Conexao;
@@ -86,7 +87,7 @@ public class CheckoutFrame extends JPanel {
 		JButton btnNewButtonEditReserve = new JButton("Estornar Pagamento");
 
 		btnNewButtonEditReserve.setHorizontalAlignment(SwingConstants.LEFT);
-		btnNewButtonEditReserve.setBounds(198, 62, 172, 34);
+		btnNewButtonEditReserve.setBounds(198, 62, 193, 34);
 		btnNewButtonEditReserve.setIcon(new ImageIcon(CheckoutFrame.class.getResource("/img/Banknotes.png")));
 		btnNewButtonEditReserve.setForeground(Color.WHITE);
 		add(btnNewButtonEditReserve);
@@ -139,17 +140,36 @@ public class CheckoutFrame extends JPanel {
 
 		        int reservaId = (int) modelTable.getValueAt(selectedRow, 0); 
 		        lblReservaSelecionada.setText(String.valueOf(reservaId)); 
-		        
-		        
-
+		        ;
+		        JButton btnAdicionarServico = new JButton("Adicionar Serviço");
+		        btnAdicionarServico.addActionListener(new ActionListener() {
+		        	public void actionPerformed(ActionEvent e) {
+		        	}
+		        });
 		       
-		       
-		        
 		        
 
 		       //preencherCamposCheckout(reservaId); // ✅ Automatically fills checkout form
 		    }
 		});
+		
+        
+        JButton btnAddServicoReserva = new JButton("Adicionar Serviço");
+        btnAddServicoReserva.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		ServiceReserveWindow service = new ServiceReserveWindow();
+        		service.frameServiceReserve.setVisible(true);
+        	
+        	}
+        });
+        btnAddServicoReserva.setIcon(new ImageIcon(CheckoutFrame.class.getResource("/img/Bell32.png")));
+        btnAddServicoReserva.setHorizontalAlignment(SwingConstants.LEFT);
+        btnAddServicoReserva.setForeground(Color.WHITE);
+        btnAddServicoReserva.setBounds(416, 62, 172, 34);
+        add(btnAddServicoReserva);
+
+		
+		
 
 		
 	
