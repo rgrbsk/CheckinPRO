@@ -59,16 +59,18 @@ public class UserFrame extends JPanel {
 	    );
 	    
 	    tabelaClientes = new JTable(); // Ensure JTable is initialized properly
-	   
+	    
 	 
 		setBounds(0, 0, 1304, 845);
 		setLayout(null);
+		
 		
 		JPanel panel = new JPanel();
 		panel.setBounds(6, 6, 1292, 28);
 		panel.setBackground(Color.DARK_GRAY);
 		add(panel);
 		panel.setLayout(null);
+		
 		
 		txtClientes_1 = new JTextField();
 		txtClientes_1.setBounds(576, 5, 140, 24);
@@ -243,7 +245,7 @@ public class UserFrame extends JPanel {
 		        addClient.lblModoEdicao.setVisible(false);
 
 			}
-		
+		    
 		});
 		btnSearchResults.addActionListener(new ActionListener() {
 		    @Override
@@ -295,7 +297,9 @@ public class UserFrame extends JPanel {
 
 		        tabelaClientes.setModel(modelTable);
 		        atualizarTotalClientes();
+		        
 		    }
+		   
 		});
 
 		btnExcluirCadastro.addActionListener(new ActionListener() {
