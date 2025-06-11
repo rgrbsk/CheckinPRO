@@ -74,7 +74,7 @@ public class CheckoutFrame extends JPanel {
 		
 		JButton btnConfirmarSaida = new JButton("Confirmar Saída");
 		btnConfirmarSaida.setBounds(6, 62, 172, 34);
-		btnConfirmarSaida.setIcon(new ImageIcon("C:\\Users\\roger\\Desktop\\Share.png"));
+		btnConfirmarSaida.setIcon(new ImageIcon(CheckoutFrame.class.getResource("/img/Share.png")));
 		btnConfirmarSaida.setForeground(Color.WHITE);
 		add(btnConfirmarSaida);
 		

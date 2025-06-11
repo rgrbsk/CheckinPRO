@@ -134,14 +134,8 @@ public class CheckinFrame extends JPanel {
 			}
 		});
 		btnNewButtonDeleteReserve.setForeground(Color.WHITE);
-		btnNewButtonDeleteReserve.setBounds(198, 770, 172, 34);
+		btnNewButtonDeleteReserve.setBounds(10, 770, 172, 34);
 		add(btnNewButtonDeleteReserve);
-		
-		JButton btnNewButtonEditReserve = new JButton("Editar Reserva");
-		btnNewButtonEditReserve.setIcon(new ImageIcon(CheckinFrame.class.getResource("/img/EditarC.png")));
-		btnNewButtonEditReserve.setForeground(Color.WHITE);
-		btnNewButtonEditReserve.setBounds(6, 770, 172, 34);
-		add(btnNewButtonEditReserve);
 		
 		JButton btnNewButtonRefresh = new JButton("");
 		btnNewButtonRefresh.addActionListener(new ActionListener() { 

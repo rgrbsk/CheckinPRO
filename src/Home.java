@@ -4,6 +4,9 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import com.formdev.flatlaf.FlatDarkLaf;
+
+import serviceWindow.ServicesWindow;
+
 import java.awt.event.*;
 
 public class Home extends JFrame {
@@ -153,7 +156,18 @@ public class Home extends JFrame {
         panelMenu.add(customBar2);
         
         JButton btnServios = new JButton("Serviços");
-        btnServios.setIcon(new ImageIcon("C:\\Users\\roger\\Desktop\\More.png"));
+        btnServios.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		
+        		ServicesWindow  serviceFrame = new  ServicesWindow();
+        		serviceFrame.frameAddReserve.setVisible(true);
+
+        		
+        		
+        		
+        	}
+        });
+        btnServios.setIcon(new ImageIcon(Home.class.getResource("/img/icons8-bell-30.png")));
         btnServios.setForeground(Color.WHITE);
         btnServios.setFont(new Font("Dialog", Font.PLAIN, 19));
         btnServios.setBorderPainted(false);
