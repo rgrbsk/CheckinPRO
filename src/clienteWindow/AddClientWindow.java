@@ -270,9 +270,10 @@ public class AddClientWindow extends JFrame  {
 	
 	public void setarImagemNoPanel() {
 
-	    ImageIcon icon = new ImageIcon(getClass().getResource("/img/Customer.png")); // 🔥 Altere o caminho da imagem
+	    ImageIcon icon = new ImageIcon(getClass().getResource("/img/ClientSized.png")); // 🔥 Altere o caminho da imagem
 
 	    JLabel labelImagem = new JLabel(icon);
+	    labelImagem.setText("");
 
 	    panelImage.setLayout(new BorderLayout()); // Ajusta layout para encaixar a imagem
 	    panelImage.add(labelImagem, BorderLayout.CENTER);
