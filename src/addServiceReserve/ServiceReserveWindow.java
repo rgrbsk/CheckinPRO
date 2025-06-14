@@ -2,6 +2,7 @@ package addServiceReserve;
 
 import objects.Client;
 import objects.Service;
+import reserveService.ReserveService;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -19,6 +20,7 @@ public class ServiceReserveWindow extends JFrame {
     private JTable tabelaServicos;
     private JTextField textQuantidadeServicos;
     private int reservaId;
+    private int idServico;
 
  
     public ServiceReserveWindow(Client cliente) {
@@ -90,6 +92,7 @@ public class ServiceReserveWindow extends JFrame {
         panelCustomFooter.add(btnVincularServico);
         
         textQuantidadeServicos = new JTextField();
+        textQuantidadeServicos.setText("1");
         textQuantidadeServicos.setHorizontalAlignment(SwingConstants.CENTER);
         textQuantidadeServicos.setFont(new Font("Tahoma", Font.PLAIN, 14));
         textQuantidadeServicos.setBounds(146, 33, 86, 20);
@@ -121,28 +124,77 @@ public class ServiceReserveWindow extends JFrame {
 
                 if (selectedRow != -1) {
                     int idServico = (int) tabelaServicos.getValueAt(selectedRow, 0);
-                    int quantidadeServicos = textQuantidadeServicos.getText().isEmpty()
-                        ? 0
-                        : Integer.parseInt(textQuantidadeServicos.getText());
-                    if (textQuantidadeServicos.getText().isEmpty()) {
-                    
-						JOptionPane.showMessageDialog(frameServiceReserve,
-								"Por favor, insira a quantidade de serviços!", "Erro", JOptionPane.WARNING_MESSAGE);
-						return;
-					}
+                    String quantidadeText = textQuantidadeServicos.getText().trim();
+                    int quantidadeServicos = quantidadeText.isEmpty() ? 0 : Integer.parseInt(quantidadeText);
+
+                    if (quantidadeServicos <= 0) {
+                        JOptionPane.showMessageDialog(
+                            frameServiceReserve,
+                            "Por favor, insira uma quantidade válida de serviços!",
+                            "Erro",
+                            JOptionPane.WARNING_MESSAGE
+                        );
+                        return;
+                    }
+
+               
+                    if (ReserveService.verificarServicosReserva(reservaId, idServico)) {
+                    	String[] options = {"Sim", "Não"};
+                        int confirm = JOptionPane.showOptionDialog(
+                            frameServiceReserve,
+                            "Esse serviço já está vinculado à reserva selecionada. Deseja editar?",
+                            "Verificação",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.QUESTION_MESSAGE,
+                            null,
+                            options,
+                            options[0]
+                        );
+
+                        if (confirm == JOptionPane.YES_OPTION) {
+                            
+                            EditServicesReserve editWindow = new EditServicesReserve(reservaId, idServico);
+                            editWindow.setVisible(true);
+
+                        } else {
+                            System.out.println("Usuário optou por não editar.");
+                        }
+
+                        return; 
+                    }
+
 
                     try {
                         Service service = new Service();
                         service.AdicionarServicosReserva(idServico, quantidadeServicos, reservaId);
-                        JOptionPane.showMessageDialog(frameServiceReserve, "Serviço vinculado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+
+                        JOptionPane.showMessageDialog(
+                            frameServiceReserve,
+                            "Serviço vinculado com sucesso!",
+                            "Sucesso",
+                            JOptionPane.INFORMATION_MESSAGE
+                        );
+
                     } catch (Exception ex) {
-                        JOptionPane.showMessageDialog(frameServiceReserve, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE); // ✅ Display error message
+                        JOptionPane.showMessageDialog(
+                            frameServiceReserve,
+                            ex.getMessage(),
+                            "Erro",
+                            JOptionPane.ERROR_MESSAGE
+                        );
                     }
+
                 } else {
-                    JOptionPane.showMessageDialog(frameServiceReserve, "Selecione um serviço antes de vincular!", "Erro", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(
+                        frameServiceReserve,
+                        "Selecione um serviço antes de vincular!",
+                        "Erro",
+                        JOptionPane.ERROR_MESSAGE
+                    );
                 }
             }
         });
+
     }
 
        
@@ -163,6 +215,9 @@ public class ServiceReserveWindow extends JFrame {
         tabelaServicos.setShowGrid(true);
         tabelaServicos.setFillsViewportHeight(true);
     }
+ 
+   
+    
     
 
     public JFrame getFrameHistoricoCliente() {
@@ -176,8 +231,10 @@ public class ServiceReserveWindow extends JFrame {
     public JFrame getFrame() {
         return frameServiceReserve;
     }
+    
+    
 
-    // Método main para teste
+    // fds main para teste
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
             try {

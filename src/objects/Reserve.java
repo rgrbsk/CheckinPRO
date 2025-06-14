@@ -7,6 +7,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -19,6 +22,36 @@ import conexao.Conexao;
 public class Reserve {
 
 	
+
+	public int getNumeroDiarias() {
+		return numeroDiarias;
+	}
+
+
+	public void setNumeroDiarias(int numeroDiarias) {
+		this.numeroDiarias = numeroDiarias;
+	}
+
+
+	public Date getDataCheckin() {
+		return dataCheckin;
+	}
+
+
+	public void setDataCheckin(Date dataCheckin) {
+		this.dataCheckin = dataCheckin;
+	}
+
+
+	public Date getDataCheckout() {
+		return dataCheckout;
+	}
+
+
+	public void setDataCheckout(Date dataCheckout) {
+		this.dataCheckout = dataCheckout;
+	}
+
 
 	public int getNumero() {
 	    return numero.getNumero(); 
@@ -44,6 +77,8 @@ public class Reserve {
 	private int numero_quarto;
 	private Date dataCheckin;
     private Date dataCheckout;
+    private int numeroDiarias;
+
 
 	public Reserve(int id, int numero_quarto, Client cliente) {
 		this.id = id;
@@ -258,6 +293,23 @@ public class Reserve {
 		}
 		return 0;
 	}
+	
+	public long calcularDiarias() {
+	    try {
+	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+	        LocalDate checkin = LocalDate.parse(this.checkinDate, formatter);
+	        LocalDate checkout = LocalDate.parse(this.checkoutDate, formatter);
+
+	        long dias = ChronoUnit.DAYS.between(checkin, checkout);
+
+	        return dias > 0 ? dias : 1; // garante ao menos 1 diária
+	    } catch (Exception e) {
+	        System.err.println("Erro ao calcular diárias: " + e.getMessage());
+	        return 0;
+	    }
+	}
+
 
 	public static int cancelarEntrada(int id) {
 		String sql = "UPDATE reserva r set r.status = 'Cancelada' WHERE ID = ?";
@@ -275,26 +327,41 @@ public class Reserve {
 	}
 
 	public static Reserve buscarReservaPorId(int reservaId) {
-	    String sql = "SELECT r.id, r.id_quarto, c.nome, c.cpf, DATEDIFF(r.data_checkout, r.data_checkin) AS numero_diarias FROM reserva r " +
-	                 "JOIN cliente c ON r.id_cliente = c.id_cliente WHERE r.id = ?";
+	    String sql = "SELECT r.id, r.id_quarto, c.id_cliente, c.nome, c.cpf, " +
+	                 "r.data_checkin, r.data_checkout, " +
+	                 "DATEDIFF(r.data_checkout, r.data_checkin) AS numero_diarias " +
+	                 "FROM reserva r " +
+	                 "JOIN cliente c ON r.id_cliente = c.id_cliente " +
+	                 "WHERE r.id = ?";
 
 	    List<Object> parametros = new ArrayList<>();
 	    parametros.add(reservaId);
 
 	    try (ResultSet rs = Conexao.executeQuery(sql, parametros)) {
-	        if (rs.next()) {
+	        if (rs != null && rs.next()) {
+	            // Cliente
 	            Client cliente = new Client(rs.getString("nome"), rs.getString("cpf"));
-	            int numeroQuarto = rs.getInt("id_quarto");
-	           
 
-	            return new Reserve(rs.getInt("id"), numeroQuarto, cliente);
+	            // Dados principais
+	            int numeroQuarto = rs.getInt("id_quarto");
+	            Date dataCheckin = rs.getDate("data_checkin");
+	            Date dataCheckout = rs.getDate("data_checkout");
+	            int numeroDiarias = rs.getInt("numero_diarias");
+
+	            // Monta a reserva
+	            Reserve reserva = new Reserve(rs.getInt("id"), numeroQuarto, cliente);
+	            reserva.setDataCheckin(dataCheckin);
+	            reserva.setDataCheckout(dataCheckout);
+	            reserva.setNumeroDiarias(numeroDiarias);
+
+	            return reserva;
 	        }
 	    } catch (Exception e) {
 	        System.err.println("Erro ao buscar reserva: " + e.getMessage());
 	        e.printStackTrace();
 	    }
 
-	    return null; 
+	    return null;
 	}
 
 	

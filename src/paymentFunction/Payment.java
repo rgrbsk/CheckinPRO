@@ -111,11 +111,10 @@ public class Payment {
             return 0;
         }}
 
-	public static int alterarStatus(int id, String novoStatus) {
-        String sql = "UPDATE pagamento SET status_pagamento = ? WHERE id = ?";
+	public static int estornarPagamento(int id) {
+        String sql = "DELETE FROM pagamento WHERE id_reserva = ?";
         List<Object> params = new ArrayList<>();
         
-        params.add(novoStatus);
         params.add(id);
         
         try {
@@ -126,6 +125,7 @@ public class Payment {
             e.printStackTrace();
             return 0;
         }
+        
 	
 	
 	}

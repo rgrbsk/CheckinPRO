@@ -220,7 +220,11 @@ public class UserFrame extends JPanel {
 		btnVerHistorico.setIcon(new ImageIcon(UserFrame.class.getResource("/img/Bookmark.png")));
 		btnVerHistorico.setBounds(192, 66, 172, 34);
 		add(btnVerHistorico);
-		carregarClientesNoGrid();
+		
+		tabelaClientes.setModel(modelTable); 
+		//loadClientData(); 
+		
+		
 		
 		
 		checkPerformance.addActionListener(e -> {
@@ -233,8 +237,8 @@ public class UserFrame extends JPanel {
 		    }
 		});
 		
-		carregarClientesNoGrid();
-		
+	
+	
 		
 		//gatilhos e Listeners para acionar botões, aq.
 		btnCadastrarCliente.addActionListener(new ActionListener() {
@@ -254,17 +258,15 @@ public class UserFrame extends JPanel {
 		        String filtroSelecionado = comboFiltro.getSelectedItem().toString();
 		        String conteudoPesquisa = textConteudoPesquisa.getText().trim();
 
-		        String limitarRegString = (comboLimitarReg.getSelectedItem() != null && 
-		                                   !comboLimitarReg.getSelectedItem().toString().trim().isEmpty())
-		                                   ? comboLimitarReg.getSelectedItem().toString().trim()
-		                                   : "1000";
-
+		        Object valorSelecionado = comboLimitarReg.getSelectedItem();
+		        String limitarRegString = (valorSelecionado != null) ? valorSelecionado.toString().trim() : "1000";
 		        int limitarRegSql;
 		        try {
 		            limitarRegSql = Integer.parseInt(limitarRegString);
 		        } catch (Exception ex) {
-		            limitarRegSql = 1000; // valor padrão
+		            limitarRegSql = 1000;
 		        }
+		        
 
 		        lblMaxRegistros.setVisible(limitarRegSql >= 1000);
 
@@ -346,9 +348,9 @@ public class UserFrame extends JPanel {
 		btnVerHistorico.addActionListener(new ActionListener() {
 		    @Override
 		    public void actionPerformed(ActionEvent e) {
-		    	int selectedRow = tabelaClientes.getSelectedRow(); // ✅ Obtém a linha realmente selecionada pelo usuário
+		    	int selectedRow = tabelaClientes.getSelectedRow(); 
 
-		        if (selectedRow == -1) { // ✅ Verifica se há uma seleção válida
+		        if (selectedRow == -1) { 
 		            JOptionPane.showMessageDialog(null, "Nenhum cliente disponível!", "Aviso", JOptionPane.WARNING_MESSAGE);
 		            return;
 		        }
@@ -368,10 +370,7 @@ public class UserFrame extends JPanel {
 		    }
 		});
 		
-		//public void atualizarTotalClientes() {
-		    //int totalClientes = Client.contarTotalClientes(); 
-		    //lblTotalClientes.setText(String.valueOf(totalClientes)); 
-		//}
+		
 		
 
 		
@@ -393,7 +392,7 @@ public class UserFrame extends JPanel {
 		            if (cliente != null) {
 		                
 		                AddClientWindow addClient = new AddClientWindow();
-		                addClient.preencherCampos(cliente); // Método para preencher os campos com os dados
+		                addClient.preencherCampos(cliente); 
 		                addClient.getFrame().setVisible(true);
 		                addClient.lblModoEdicao.setText("Edição de Cadastro");
 		            } else {
@@ -448,6 +447,13 @@ public class UserFrame extends JPanel {
 
 		    tabelaClientes.setModel(modelTable); 
 
+		}
+		public static Integer tryParseInt(String valor) {
+		    try {
+		        return Integer.parseInt(valor);
+		    } catch (NumberFormatException e) {
+		        return null;
+		    }
 		}
 		
 		

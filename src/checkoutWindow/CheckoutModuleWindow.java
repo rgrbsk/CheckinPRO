@@ -29,6 +29,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ChangeEvent;
 import javax.swing.table.DefaultTableModel;
 
 import com.toedter.calendar.JDateChooser;
@@ -37,6 +38,9 @@ import objects.Client;
 import objects.Reserve;
 import objects.Room;
 import paymentFunction.Payment;
+import reserveService.ReserveService;
+import servicoConsumo.ServicoConsumo;
+
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JCheckBox;
@@ -49,7 +53,7 @@ public class CheckoutModuleWindow extends JPanel {
 
 	public JFrame frameCheckoutPayment;
 	private DefaultTableModel model;
-	private JFrame frame; // ✅ Declare a variável do JFrame
+	private JFrame frame; 
 	private JTextField textIdQuarto;
 	private JTextField textIdReserva;
 	private JTextField textNomeCliente;
@@ -62,7 +66,10 @@ public class CheckoutModuleWindow extends JPanel {
 	private JTextField textIdCliente;
 	private JTextField textField;
 	private JTextField textField_1;
-	private JTextField textDiarias;
+	private JTextField textNumeroDiarias;
+	private JTextField textDataCheckin;
+	private JTextField textDataCheckout;
+	private JTable tabelaConsumption;
 
 	public JFrame getFrame() {
 		return frame; // ✅ Certifique-se de que retorna a instância correta
@@ -94,6 +101,8 @@ public class CheckoutModuleWindow extends JPanel {
 	}
 
 	public void initialize() {
+		
+			
     		
     	    frameCheckoutPayment = new JFrame();
     	    frameCheckoutPayment.setResizable(false);
@@ -109,16 +118,16 @@ public class CheckoutModuleWindow extends JPanel {
     	    
     	    
 
-    	    // ✅ Checkout Panel
+    	  
     	    JPanel checkoutPanel = new JPanel();
     	    checkoutPanel.setLayout(null);
     	    tabbedPane.addTab("Checkout", checkoutPanel);
-    	 // ✅ Create Consumption Panel
+  
     	    JPanel consumptionPanel = new JPanel();
     	   
     	    consumptionPanel.setLayout(null);
     	    tabbedPane.addTab("Consumo", consumptionPanel);
-    	    // ✅ Add Table for Consumptions
+    	    
     	    
     	    String[] colunasConsumo = {"Item", "Quantidade", "Valor Unitário", "Total"};
     	    DefaultTableModel modelConsumption = new DefaultTableModel(null, colunasConsumo);
@@ -127,7 +136,7 @@ public class CheckoutModuleWindow extends JPanel {
     	    scrollPaneConsumo.setBounds(30, 50, 650, 400);
     	    consumptionPanel.add(scrollPaneConsumo);
 
-    	    // ✅ Add Labels and Input Fields
+    	  
     	    JLabel lblTotalConsumo = new JLabel("Serviços Extras");
     	    lblTotalConsumo.setForeground(Color.GREEN);
     	    lblTotalConsumo.setFont(new Font("Segoe UI", Font.PLAIN, 16));
@@ -138,12 +147,6 @@ public class CheckoutModuleWindow extends JPanel {
     	    txtTotalConsumo.setBounds(40, 489, 150, 22);
     	    txtTotalConsumo.setEditable(false);
     	    consumptionPanel.add(txtTotalConsumo);
-
-    	    // ✅ Add Button to Process Consumptions
-    	    JButton btnFinalizarConsumo = new JButton("Confirmar Consumo");
-    	    btnFinalizarConsumo.setIcon(new ImageIcon(CheckoutModuleWindow.class.getResource("/img/Ok.png")));
-    	    btnFinalizarConsumo.setBounds(305, 561, 200, 39);
-    	    consumptionPanel.add(btnFinalizarConsumo);
     	    
     	    JLabel lblProdFrigobar = new JLabel("Prod. Frigobar ($)");
     	    lblProdFrigobar.setForeground(Color.GREEN);
@@ -194,8 +197,12 @@ public class CheckoutModuleWindow extends JPanel {
     	    btnFinalizarConsumo_1.setIcon(new ImageIcon(CheckoutModuleWindow.class.getResource("/img/icons8-actualizar-30 (1).png")));
     	    btnFinalizarConsumo_1.setBounds(199, 561, 96, 39);
     	    consumptionPanel.add(btnFinalizarConsumo_1);
+    	    
+    	    JButton btnBuscarServicos = new JButton("Buscar Serviços");
+    	    btnBuscarServicos.setIcon(new ImageIcon(CheckoutModuleWindow.class.getResource("/img/icons8-pesquisar-30.png")));
+    	    
 
-    	    // ✅ Payment Panel
+    	    
     	    JPanel paymentPanel = new JPanel();
     	    
     	    paymentPanel.setLayout(null);
@@ -214,6 +221,7 @@ public class CheckoutModuleWindow extends JPanel {
     	    paymentPanel.add(panelCheckDate_2);
     	    
     	    textValorTotal = new JTextField();
+    	    textValorTotal.setText("1");
     	    textValorTotal.setEditable(false);
     	    textValorTotal.setColumns(10);
     	    textValorTotal.setBounds(117, 23, 206, 22);
@@ -232,6 +240,7 @@ public class CheckoutModuleWindow extends JPanel {
     	    panelCheckDate_2.add(lblCpf_1_1);
     	    
     	    textMetodoPagamento = new JTextField();
+    	    textMetodoPagamento.setForeground(Color.CYAN);
     	    textMetodoPagamento.setEditable(false);
      
     	    textMetodoPagamento.setColumns(10);
@@ -251,15 +260,15 @@ public class CheckoutModuleWindow extends JPanel {
     	    btnPagDinheiro.setBounds(86, 32, 168, 44);
     	    panelCheckDate_1.add(btnPagDinheiro);
     	    
-    	    JButton btnCarto_1 = new JButton("Cartão");
-    	    btnCarto_1.setIcon(new ImageIcon(CheckoutModuleWindow.class.getResource("/img/MasterCard.png")));
-    	    btnCarto_1.setBounds(86, 108, 168, 44);
-    	    panelCheckDate_1.add(btnCarto_1);
-    	    
-    	    JButton btnPagCartao = new JButton("Transf. Bancária");
-    	    btnPagCartao.setIcon(new ImageIcon(CheckoutModuleWindow.class.getResource("/img/Paycheque.png")));
-    	    btnPagCartao.setBounds(86, 203, 168, 44);
+    	    JButton btnPagCartao = new JButton("Cartão");
+    	    btnPagCartao.setIcon(new ImageIcon(CheckoutModuleWindow.class.getResource("/img/MasterCard.png")));
+    	    btnPagCartao.setBounds(86, 108, 168, 44);
     	    panelCheckDate_1.add(btnPagCartao);
+    	    
+    	    JButton btnPagTransferencia = new JButton("Transf. Bancária");
+    	    btnPagTransferencia.setIcon(new ImageIcon(CheckoutModuleWindow.class.getResource("/img/Paycheque.png")));
+    	    btnPagTransferencia.setBounds(86, 203, 168, 44);
+    	    panelCheckDate_1.add(btnPagTransferencia);
     	    
     	    JComboBox comboCartoes = new JComboBox();
     	    comboCartoes.setBounds(86, 148, 168, 22);
@@ -283,12 +292,12 @@ public class CheckoutModuleWindow extends JPanel {
     	    
     	    textField_6 = new JTextField();
     	    textField_6.setColumns(10);
-    	    textField_6.setBounds(264, 148, 59, 22);
+    	    textField_6.setBounds(264, 148, 45, 22);
     	    panelCheckDate_1.add(textField_6);
     	    
     	    JLabel lblNewLabel_1_1 = new JLabel("Parcelas");
     	    lblNewLabel_1_1.setForeground(Color.GREEN);
-    	    lblNewLabel_1_1.setBounds(266, 138, 45, 14);
+    	    lblNewLabel_1_1.setBounds(264, 134, 45, 14);
     	    panelCheckDate_1.add(lblNewLabel_1_1);
     	    
     	    JButton btnFinalizarPagamento = new JButton("Finalizar");
@@ -305,64 +314,140 @@ public class CheckoutModuleWindow extends JPanel {
     	    JLabel lblCpf = new JLabel("CPF do Cliente *");
     	    lblCpf.setForeground(new Color(17, 193, 120));
     	    lblCpf.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-    	    lblCpf.setBounds(262, 290, 183, 16);
+    	    lblCpf.setBounds(261, 251, 183, 16);
     	    checkoutPanel.add(lblCpf);
     	    
     	    JLabel lblRoomNumber = new JLabel("Id do Quarto *");
     	    lblRoomNumber.setForeground(new Color(17, 193, 120));
     	    lblRoomNumber.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-    	    lblRoomNumber.setBounds(262, 222, 183, 16);
+    	    lblRoomNumber.setBounds(261, 183, 183, 16);
     	    checkoutPanel.add(lblRoomNumber);
     	    
     	    textIdQuarto = new JTextField();
     	    textIdQuarto.setColumns(10);
-    	    textIdQuarto.setBounds(262, 250, 206, 22);
+    	    textIdQuarto.setBounds(261, 211, 206, 22);
     	    checkoutPanel.add(textIdQuarto);
     	    
     	    textIdReserva = new JTextField();
     	    textIdReserva.setColumns(10);
-    	    textIdReserva.setBounds(262, 117, 206, 22);
+    	    textIdReserva.setBounds(261, 78, 206, 22);
     	    checkoutPanel.add(textIdReserva);
     	    
     	    JLabel lblNomeDoCliente = new JLabel("Nome do Cliente *");
     	    lblNomeDoCliente.setToolTipText("");
     	    lblNomeDoCliente.setForeground(new Color(17, 193, 120));
     	    lblNomeDoCliente.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-    	    lblNomeDoCliente.setBounds(262, 163, 139, 16);
+    	    lblNomeDoCliente.setBounds(261, 124, 139, 16);
     	    checkoutPanel.add(lblNomeDoCliente);
     	    
     	    textNomeCliente = new JTextField();
     	    textNomeCliente.setColumns(10);
-    	    textNomeCliente.setBounds(262, 190, 206, 22);
+    	    textNomeCliente.setBounds(261, 151, 206, 22);
     	    checkoutPanel.add(textNomeCliente);
     	    
     	    textCpfCliente = new JTextField();
     	    textCpfCliente.setColumns(10);
-    	    textCpfCliente.setBounds(262, 317, 206, 22);
+    	    textCpfCliente.setBounds(261, 278, 206, 22);
     	    checkoutPanel.add(textCpfCliente);
     	    
     	    JLabel lblReserva = new JLabel("Reserva *");
     	    lblReserva.setForeground(new Color(17, 193, 120));
     	    lblReserva.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-    	    lblReserva.setBounds(262, 90, 183, 16);
+    	    lblReserva.setBounds(261, 51, 183, 16);
     	    checkoutPanel.add(lblReserva);
     	    
     	    textIdCliente = new JTextField();
     	    textIdCliente.setColumns(10);
-    	    textIdCliente.setBounds(400, 164, 68, 22);
+    	    textIdCliente.setBounds(399, 125, 68, 22);
     	    checkoutPanel.add(textIdCliente);
     	    
-    	    textDiarias = new JTextField();
-    	    textDiarias.setColumns(10);
-    	    textDiarias.setBounds(262, 401, 206, 22);
-    	    checkoutPanel.add(textDiarias);
+    	    JPanel panelCheckDate_2_1 = new JPanel();
+    	    panelCheckDate_2_1.setLayout(null);
+    	    panelCheckDate_2_1.setBorder(new CompoundBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null), 
+    	        	                        new TitledBorder(null, "", TitledBorder.CENTER, TitledBorder.TOP, null)));
+    	    panelCheckDate_2_1.setBounds(261, 331, 206, 192);
+    	    checkoutPanel.add(panelCheckDate_2_1);
+    	    
+    	    textDataCheckin = new JTextField();
+    	    textDataCheckin.setFont(new Font("Tahoma", Font.PLAIN, 14));
+    	    textDataCheckin.setHorizontalAlignment(SwingConstants.CENTER);
+    	    textDataCheckin.setColumns(10);
+    	    textDataCheckin.setBounds(52, 27, 130, 22);
+    	    panelCheckDate_2_1.add(textDataCheckin);
+    	    
+    	    textNumeroDiarias = new JTextField();
+    	    textNumeroDiarias.setFont(new Font("Tahoma", Font.PLAIN, 14));
+    	    textNumeroDiarias.setHorizontalAlignment(SwingConstants.CENTER);
+    	    textNumeroDiarias.setBounds(55, 159, 86, 22);
+    	    panelCheckDate_2_1.add(textNumeroDiarias);
+    	    textNumeroDiarias.setColumns(10);
     	    
     	    JLabel lblDirias = new JLabel("Diárias");
+    	    lblDirias.setBounds(70, 142, 71, 16);
+    	    panelCheckDate_2_1.add(lblDirias);
     	    lblDirias.setForeground(new Color(17, 193, 120));
     	    lblDirias.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-    	    lblDirias.setBounds(262, 374, 183, 16);
-    	    checkoutPanel.add(lblDirias);
+    	    
+    	    JLabel lblNewLabel = new JLabel("");
+    	    lblNewLabel.setBounds(24, 23, 30, 30);
+    	    panelCheckDate_2_1.add(lblNewLabel);
+    	    lblNewLabel.setIcon(new ImageIcon(CheckoutModuleWindow.class.getResource("/img/Calendar.png")));
+    	    
+    	    JLabel lblNewLabel_1 = new JLabel("");
+    	    lblNewLabel_1.setIcon(new ImageIcon(CheckoutModuleWindow.class.getResource("/img/Calendar.png")));
+    	    lblNewLabel_1.setBounds(24, 81, 30, 30);
+    	    panelCheckDate_2_1.add(lblNewLabel_1);
+    	    
+    	    textDataCheckout = new JTextField();
+    	    textDataCheckout.setFont(new Font("Tahoma", Font.PLAIN, 14));
+    	    textDataCheckout.setHorizontalAlignment(SwingConstants.CENTER);
+    	    textDataCheckout.setColumns(10);
+    	    textDataCheckout.setBounds(52, 85, 130, 22);
+    	    panelCheckDate_2_1.add(textDataCheckout);
+    	    
+    	    JLabel lblSada = new JLabel("Saída");
+    	    lblSada.setForeground(new Color(17, 193, 120));
+    	    lblSada.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+    	    lblSada.setBounds(85, 70, 71, 16);
+    	    panelCheckDate_2_1.add(lblSada);
+    	    
+    	    JLabel lblEntrada = new JLabel("Entrada");
+    	    lblEntrada.setForeground(new Color(17, 193, 120));
+    	    lblEntrada.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+    	    lblEntrada.setBounds(85, 11, 71, 16);
+    	    panelCheckDate_2_1.add(lblEntrada);
     	    textIdCliente.setVisible(false);
+    	    
+    	    btnBuscarServicos.addActionListener(new ActionListener() {
+    	        @Override
+    	        public void actionPerformed(ActionEvent e) {
+    	            try {
+    	                int reservaId = textIdReserva.getText().isEmpty() ? 0 : Integer.parseInt(textIdReserva.getText());
+    	                List<ServicoConsumo> consumos = ReserveService.buscarServicosVinculados(reservaId);
+
+    	                DefaultTableModel model = (DefaultTableModel) tabelaConsumption.getModel();
+    	                model.setRowCount(0); // Limpa a tabela
+
+    	                for (ServicoConsumo item : consumos) {
+    	                    model.addRow(new Object[] {
+    	                        item.getNome(),
+    	                        item.getQuantidade(),
+    	                        String.format("R$ %.2f", item.getValorUnitario()),
+    	                        String.format("R$ %.2f", item.getTotal())
+    	                    });
+    	                }
+    	            } catch (NumberFormatException ex) {
+    	                JOptionPane.showMessageDialog(null, "ID da reserva inválido.", "Erro", JOptionPane.ERROR_MESSAGE);
+    	            } catch (Exception ex) {
+    	                JOptionPane.showMessageDialog(null, "Erro ao buscar serviços vinculados: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+    	                ex.printStackTrace();
+    	            }
+    	        }
+    	    });
+    	    btnBuscarServicos.setBounds(298, 548, 164, 52);
+    	    consumptionPanel.add(btnBuscarServicos);
+    	    
+    	    
     	    
     	    
     	    btnFinalizarPagamento.addActionListener(new ActionListener() {
@@ -418,44 +503,78 @@ public class CheckoutModuleWindow extends JPanel {
     	            textMetodoPagamento.setText("Dinheiro");
     	        }
     	    });
+			btnPagCartao.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					textMetodoPagamento.setText("Cartão");
+				}
+			});
+			btnPagTransferencia.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					textMetodoPagamento.setText("Transferência Bancária");
+				}
+			});
+			btnPagPix.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					textMetodoPagamento.setText("PIX");
+				}
+			});
+			btnPagOutro.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					textMetodoPagamento.setText("Outro");
+				}
+			});
+			btnClear.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					frameCheckoutPayment.dispose();
+				}
+			});
 	}
-	public void calcularDiarias() { 
-	    int reservaId = Integer.parseInt(textIdReserva.getText()); // ✅ Pega ID da reserva
+	public void preencherTabelaConsumo(int reservaId) {
+	    DefaultTableModel model = (DefaultTableModel) tabelaConsumption.getModel();
+	    model.setRowCount(0); // limpa a tabela
 
-	    String sql = "SELECT DATEDIFF(data_checkout, data_checkin) AS numero_diarias FROM reserva WHERE id = ?";
+	    List<ServicoConsumo> consumos = ReserveService.buscarServicosVinculados(reservaId);
 
-	    try (Connection conn = Conexao.getConnection();
-	         PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-	        stmt.setInt(1, reservaId); // ✅ Insere o ID corretamente
-	        ResultSet rs = stmt.executeQuery();
-
-	        if (rs.next()) {
-	            textDiarias.setText(String.valueOf(rs.getInt("numero_diarias"))); // ✅ Exibe o número de diárias
-	        } else {
-	            JOptionPane.showMessageDialog(null, "Reserva não encontrada!", "Erro", JOptionPane.ERROR_MESSAGE);
-	        }
-
-	    } catch (SQLException e) {
-	        System.err.println("Erro ao calcular diárias: " + e.getMessage());
-	        e.printStackTrace();
+	    for (ServicoConsumo item : consumos) {
+	        model.addRow(new Object[] {
+	            item.getNome(),
+	            item.getQuantidade(),
+	            String.format("R$ %.2f", item.getValorUnitario()),
+	            String.format("R$ %.2f", item.getTotal())
+	        });
 	    }
 	}
 
+
 	public void preencherCamposCheckout(int reservaId) {
-		Reserve reserva = Reserve.buscarReservaPorId(reservaId);
+	    Reserve reserva = Reserve.buscarReservaPorId(reservaId);
 
-		if (reserva != null) {
-			textNomeCliente.setText(reserva.getCliente().getNome());
-			textCpfCliente.setText(reserva.getCliente().getCpf());
-			textIdCliente.setText(String.valueOf(reserva.getCliente().getId()));
+	    if (reserva != null) {
+	        // Cliente
+	        textNomeCliente.setText(reserva.getCliente().getNome());
+	        textCpfCliente.setText(reserva.getCliente().getCpf());
+	        textIdCliente.setText(String.valueOf(reserva.getCliente().getId()));
 
-			textIdQuarto.setText(String.valueOf(reserva.getNumero_quarto())); // ✅ Diretamente do objeto reserva
-			textIdReserva.setText(String.valueOf(reserva.getId()));
+	     
+	        textIdQuarto.setText(String.valueOf(reserva.getNumero_quarto()));
+	        textIdReserva.setText(String.valueOf(reserva.getId()));
+
+	       
 	        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-	    
-		} else {
-			JOptionPane.showMessageDialog(null, "Erro ao carregar reserva!", "Aviso", JOptionPane.WARNING_MESSAGE);
-		}
-	}
-}
+	        textDataCheckin.setText(dateFormat.format(reserva.getDataCheckin()));
+	        textDataCheckout.setText(dateFormat.format(reserva.getDataCheckout()));
+
+	      
+	        if (textNumeroDiarias != null) {
+	            textNumeroDiarias.setText(String.valueOf(reserva.getNumeroDiarias()));
+	        }
+
+	    } else {
+	        JOptionPane.showMessageDialog(null, "Erro ao carregar reserva!", "Aviso", JOptionPane.WARNING_MESSAGE);
+	    }
+	}}

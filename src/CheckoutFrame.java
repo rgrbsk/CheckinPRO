@@ -1,4 +1,5 @@
 import javax.swing.JPanel;
+
 import checkoutWindow.CheckoutModuleWindow;
 import java.awt.Color;
 import javax.swing.JLabel;
@@ -24,11 +25,14 @@ import objects.Client;
 import objects.Reserve;
 import objects.Service;
 import paymentFunction.Payment;
+import reserveService.ReserveService;
+import servicoConsumo.ServicoConsumo;
 
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 
 import java.awt.Component;
 import javax.swing.JComboBox;
@@ -88,13 +92,13 @@ public class CheckoutFrame extends JPanel {
 	
 	    Reserve.pesquisarReservasCheckout(modelTable, tabelaReservas); // 🔥 Ago
 	    
-		JButton btnNewButtonEditReserve = new JButton("Estornar Pagamento");
+		JButton btnEstornarPagamento = new JButton("Estornar Pagamento");
 
-		btnNewButtonEditReserve.setHorizontalAlignment(SwingConstants.LEFT);
-		btnNewButtonEditReserve.setBounds(198, 62, 193, 34);
-		btnNewButtonEditReserve.setIcon(new ImageIcon(CheckoutFrame.class.getResource("/img/Banknotes.png")));
-		btnNewButtonEditReserve.setForeground(Color.WHITE);
-		add(btnNewButtonEditReserve);
+		btnEstornarPagamento.setHorizontalAlignment(SwingConstants.LEFT);
+		btnEstornarPagamento.setBounds(198, 62, 193, 34);
+		btnEstornarPagamento.setIcon(new ImageIcon(CheckoutFrame.class.getResource("/img/Banknotes.png")));
+		btnEstornarPagamento.setForeground(Color.WHITE);
+		add(btnEstornarPagamento);
 		
 		JButton btnNewButtonSearch = new JButton("");
 		btnNewButtonSearch.setBounds(837, 75, 64, 34);
@@ -113,22 +117,16 @@ public class CheckoutFrame extends JPanel {
 		comboBoxFilter.setForeground(Color.WHITE);
 		add(comboBoxFilter);
 		
-		JPanel panelCustomFooter_1 = new JPanel();
-		panelCustomFooter_1.setLayout(null);
-		panelCustomFooter_1.setBackground(Color.DARK_GRAY);
-		panelCustomFooter_1.setBounds(6, 770, 1057, 64);
-		add(panelCustomFooter_1);
-		
 		JLabel lblReservaSelecionada = new JLabel("-");
 		lblReservaSelecionada.setForeground(Color.ORANGE);
 		lblReservaSelecionada.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblReservaSelecionada.setBounds(1209, 787, 108, 26);
+		lblReservaSelecionada.setBounds(699, 758, 108, 26);
 		add(lblReservaSelecionada);
 		
 		JLabel lblReservaSelecionada_1 = new JLabel("ID Reserva:");
         lblReservaSelecionada_1.setForeground(Color.ORANGE);
         lblReservaSelecionada_1.setFont(new Font("Tahoma", Font.PLAIN, 18));
-        lblReservaSelecionada_1.setBounds(1109, 787, 102, 26);
+        lblReservaSelecionada_1.setBounds(599, 758, 102, 26);
         add(lblReservaSelecionada_1);
 		boolean pagamentoAtivo = false;
 		
@@ -138,8 +136,7 @@ public class CheckoutFrame extends JPanel {
 		        int selectedRow = tabelaReservas.getSelectedRow();
 
 		        if (selectedRow != -1) {
-		            reservaId = (int) modelTable.getValueAt(selectedRow, 0); 
-		            lblReservaSelecionada.setText(String.valueOf(reservaId)); 
+		            reservaId = (int) modelTable.getValueAt(selectedRow, 0);
 		        }
 		    }
 		});
@@ -187,6 +184,69 @@ public class CheckoutFrame extends JPanel {
         btnAddServicoReserva.setForeground(Color.WHITE);
         btnAddServicoReserva.setBounds(416, 62, 172, 34);
         add(btnAddServicoReserva);
+        
+        JButton btnVerServicos = new JButton("Ver Serviços");
+        
+        btnVerServicos.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = tabelaReservas.getSelectedRow();
+
+                if (selectedRow == -1) {
+                    JOptionPane.showMessageDialog(null,
+                        "Selecione corretamente uma reserva.",
+                        "Aviso",
+                        JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+
+                int reservaId = (int) modelTable.getValueAt(selectedRow, 0);
+                List<ServicoConsumo> listaServicos = ReserveService.buscarServicosVinculados(reservaId);
+
+                if (listaServicos.isEmpty()) {
+                    JOptionPane.showMessageDialog(null,
+                        "Nenhum serviço encontrado para esta reserva.",
+                        "Aviso",
+                        JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    StringBuilder sb = new StringBuilder();
+                    double totalGeral = 0.0;
+
+                  
+                    sb.append(String.format("%-30s | %-10s | %-15s | %-12s%n",
+                        "Serviço", "Quantidade", "Valor Unitário", "Total"));
+                    sb.append("-------------------------------------------------------------------------------\n"); //eu sei que e um pouco longo, mas é para manter o alinhamento
+
+                
+                    for (ServicoConsumo servico : listaServicos) {
+                        double totalParcial = servico.getTotal();
+                        totalGeral += totalParcial;
+
+                        sb.append(String.format("%-30s | %-10d | R$ %-12.2f | R$ %-8.2f%n",
+                            servico.getNome(),
+                            servico.getQuantidade(),
+                            servico.getValorUnitario(),
+                            totalParcial));
+                    }
+
+                
+                    sb.append("-------------------------------------------------------------------------------\n");
+                    sb.append(String.format("%-59s R$ %.2f", "Total de serviços até o momento:", totalGeral));
+
+                   
+                    JTextArea areaTexto = new JTextArea(sb.toString());
+                    areaTexto.setFont(new Font("Consolas", Font.PLAIN, 13));
+                    areaTexto.setEditable(false);
+                    JScrollPane scroll = new JScrollPane(areaTexto);
+
+                    JOptionPane.showMessageDialog(null, scroll, "Serviços da Reserva", JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+        });
+        btnVerServicos.setIcon(new ImageIcon(CheckoutFrame.class.getResource("/img/Contacts40.png")));
+        btnVerServicos.setHorizontalAlignment(SwingConstants.LEFT);
+        btnVerServicos.setForeground(Color.WHITE);
+        btnVerServicos.setBounds(606, 62, 172, 34);
+        add(btnVerServicos);
 
 		
 		
@@ -224,9 +284,32 @@ public class CheckoutFrame extends JPanel {
 		        
 		    }
 		});
-		btnNewButtonEditReserve.addActionListener(new ActionListener() {
+		btnEstornarPagamento.addActionListener(new ActionListener() {
 		    @Override
 		    public void actionPerformed(ActionEvent e) {
+		    	String[] options = {"Sim", "Não"};
+		        int confirm = JOptionPane.showOptionDialog(
+		            null, 
+		            "Deseja estornar o pagamento da reserva selecionada?",
+		            "Confirmação de Exclusão", 
+		            JOptionPane.YES_NO_OPTION, 
+		            JOptionPane.QUESTION_MESSAGE, 
+		            null, // No cu
+		            options, 
+		            options[0]
+		        );
+		        if (confirm == 0) {
+		            int deletedRows = Payment.estornarPagamento(reservaId);
+
+		            if (deletedRows > 0) {
+		                JOptionPane.showMessageDialog(null, "Pagamento estornado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+		            } else {
+		                JOptionPane.showMessageDialog(null, "Erro ao estornar pagamento", "Erro", JOptionPane.ERROR_MESSAGE);
+		            }
+		        } else {
+		            JOptionPane.showMessageDialog(null, "Estorno cancelado pelo usuário.");
+		        }
+		    	
 		        int selectedRow = tabelaReservas.getSelectedRow();
 
 		        if (selectedRow == -1) { 
@@ -238,9 +321,9 @@ public class CheckoutFrame extends JPanel {
 		        System.out.println("Reserva selecionada para alteração: ID " + reservaId);
 
 		        
-		        Reserve.pesquisarReservasCheckout(modelTable, tabelaReservas);
+		        Payment.estornarPagamento(reservaId);
 
-		        JOptionPane.showMessageDialog(null, "Status do pagamento foi alterado!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+		        
 		    }
 		});
 		

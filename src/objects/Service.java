@@ -25,6 +25,10 @@ public class Service {
         this.descricao = descricao;
         this.valor = valor;
     }
+    public Service(int id) {
+        this.id = id;
+   
+    }
     
   
     
@@ -63,6 +67,7 @@ public class Service {
             return 0;
         }
     }
+    
     public static List<Service> buscarTodosServicos() {
         String sql = "SELECT id_servico, descricao, valor FROM servicos_extra";
         List<Service> result = new ArrayList<>();
@@ -139,6 +144,7 @@ public class Service {
         }
         return result;
     }
+   
     
     public static int deleteData(int id) {
         String sql = "DELETE FROM servicos_extra WHERE id_servico = ?";
