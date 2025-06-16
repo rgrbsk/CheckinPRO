@@ -18,6 +18,7 @@ import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 
 import addServiceReserve.ServiceReserveWindow;
+import addServiceReserve.ViewServicesWindow;
 import clienteWindow.AddClientWindow;
 import clienteWindow.ClientHistoricWindow;
 import conexao.Conexao;
@@ -27,6 +28,7 @@ import objects.Service;
 import paymentFunction.Payment;
 import reserveService.ReserveService;
 import servicoConsumo.ServicoConsumo;
+import systemReports.GerarRelatorios;
 
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
@@ -130,6 +132,7 @@ public class CheckoutFrame extends JPanel {
         add(lblReservaSelecionada_1);
 		boolean pagamentoAtivo = false;
 		
+		btnNewButtonSearch.doClick();
 		
 		tabelaReservas.getSelectionModel().addListSelectionListener(event -> {
 		    if (!event.getValueIsAdjusting()) { 
@@ -202,43 +205,12 @@ public class CheckoutFrame extends JPanel {
                 int reservaId = (int) modelTable.getValueAt(selectedRow, 0);
                 List<ServicoConsumo> listaServicos = ReserveService.buscarServicosVinculados(reservaId);
 
+                ViewServicesWindow viewServicesWindow = new ViewServicesWindow(listaServicos, reservaId);
+                viewServicesWindow.setVisible(true);
+
                 if (listaServicos.isEmpty()) {
-                    JOptionPane.showMessageDialog(null,
-                        "Nenhum serviço encontrado para esta reserva.",
-                        "Aviso",
+                    JOptionPane.showMessageDialog(viewServicesWindow, "Nenhum serviço vinculado a esta reserva.", "Informação",
                         JOptionPane.INFORMATION_MESSAGE);
-                } else {
-                    StringBuilder sb = new StringBuilder();
-                    double totalGeral = 0.0;
-
-                  
-                    sb.append(String.format("%-30s | %-10s | %-15s | %-12s%n",
-                        "Serviço", "Quantidade", "Valor Unitário", "Total"));
-                    sb.append("-------------------------------------------------------------------------------\n"); //eu sei que e um pouco longo, mas é para manter o alinhamento
-
-                
-                    for (ServicoConsumo servico : listaServicos) {
-                        double totalParcial = servico.getTotal();
-                        totalGeral += totalParcial;
-
-                        sb.append(String.format("%-30s | %-10d | R$ %-12.2f | R$ %-8.2f%n",
-                            servico.getNome(),
-                            servico.getQuantidade(),
-                            servico.getValorUnitario(),
-                            totalParcial));
-                    }
-
-                
-                    sb.append("-------------------------------------------------------------------------------\n");
-                    sb.append(String.format("%-59s R$ %.2f", "Total de serviços até o momento:", totalGeral));
-
-                   
-                    JTextArea areaTexto = new JTextArea(sb.toString());
-                    areaTexto.setFont(new Font("Consolas", Font.PLAIN, 13));
-                    areaTexto.setEditable(false);
-                    JScrollPane scroll = new JScrollPane(areaTexto);
-
-                    JOptionPane.showMessageDialog(null, scroll, "Serviços da Reserva", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
         });
@@ -247,7 +219,31 @@ public class CheckoutFrame extends JPanel {
         btnVerServicos.setForeground(Color.WHITE);
         btnVerServicos.setBounds(606, 62, 172, 34);
         add(btnVerServicos);
+        
+        JButton btnReimpressao = new JButton("Reimpressão");
+        btnReimpressao.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+				int selectedRow = tabelaReservas.getSelectedRow();
 
+				if (selectedRow == -1) {
+					JOptionPane.showMessageDialog(null, "Selecione corretamente uma reserva.", "Aviso",
+							JOptionPane.WARNING_MESSAGE);
+					return;
+				}
+
+				int reservaId = (int) modelTable.getValueAt(selectedRow, 0);
+
+				Payment pagamento = new Payment();
+				pagamento.verificarPagamento(reservaId);
+				GerarRelatorios gerarRelatorios = new GerarRelatorios();
+				gerarRelatorios.gerarRecibo(reservaId);
+        	}
+        });
+        btnReimpressao.setIcon(new ImageIcon(CheckoutFrame.class.getResource("/img/Receipt.png")));
+        btnReimpressao.setForeground(Color.WHITE);
+        btnReimpressao.setBounds(6, 747, 172, 34);
+        add(btnReimpressao);
+        
 		
 		
 
@@ -326,6 +322,8 @@ public class CheckoutFrame extends JPanel {
 		        
 		    }
 		});
+		;
+		
 		
 		
 

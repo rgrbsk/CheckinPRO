@@ -77,6 +77,64 @@ public class ReserveService {
 		}
 	}
 
+	public static String deletarServicoReserva(String descricaoServico, int idReserva) { 
+		
+
+		String sql = "DELETE FROM reserva_servico WHERE id_servico = (SELECT id_servico FROM servicos_extra WHERE descricao = ?) and reservas_id = ?";
+
+		List<Object> parametros = new ArrayList<>();
+		parametros.add(descricaoServico);
+		parametros.add(idReserva);
+
+		try {
+			int linhasAfetadas = Conexao.executeUpdate(sql, parametros);
+			if (linhasAfetadas > 0) {
+				JOptionPane.showMessageDialog(null, "Serviço removido com sucesso!", "Sucesso",
+						JOptionPane.INFORMATION_MESSAGE);
+				System.out.println("Serviço removido com sucesso!");
+				return "Serviço removido com sucesso!";
+			} else {
+				JOptionPane.showMessageDialog(null, "Nenhum serviço encontrado com a descrição: " + descricaoServico,
+						"Aviso", JOptionPane.WARNING_MESSAGE);
+				System.out.println("Nenhum serviço encontrado com a descrição: " + descricaoServico);
+				return "Nenhum serviço encontrado com a descrição: " + descricaoServico;
+			}
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "Erro ao remover serviço: " + e.getMessage(), "Erro",
+					JOptionPane.ERROR_MESSAGE);
+			e.printStackTrace();
+			return "Erro ao remover serviço: " + e.getMessage();
+		}
+	}
+	public static double calcularValorTotalReserva(int reservaId) {
+	    String sql = "SELECT DATEDIFF(r.data_checkout, r.data_checkin) AS dias, " +
+	                 "q.preco_diaria, " +
+	                 "COALESCE(SUM(se.valor * rs.quantidade), 0) AS total_servicos " +
+	                 "FROM reserva r " +
+	                 "LEFT JOIN quarto q ON r.id_quarto = q.id " +
+	                 "LEFT JOIN reserva_servico rs ON rs.reservas_id = r.id " +
+	                 "LEFT JOIN servicos_extra se ON rs.id_servico = se.id_servico " +
+	                 "WHERE r.id = ? " +
+	                 "GROUP BY dias, q.preco_diaria";
+
+	    List<Object> parametros = Arrays.asList(reservaId);
+
+	    try (ResultSet rs = Conexao.executeQuery(sql, parametros)) {
+	        if (rs != null && rs.next()) {
+	            int dias = rs.getInt("dias");
+	            double precoDiaria = rs.getDouble("preco_diaria");
+	            double totalServicos = rs.getDouble("total_servicos");
+
+	            double totalHospedagem = dias * precoDiaria;
+	            return totalHospedagem + totalServicos;
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+
+	    return 0.0;
+	}
+
 	public static int cancelarReserva(int idReserva, int idServico) {
 		String sql = "DELETE FROM reserva_servico WHERE id_reserva = ? AND id_servico = ?";
 

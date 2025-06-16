@@ -18,5 +18,18 @@
 	<classpathentry kind="lib" path="lib/calendar/jgoodies-common-1.2.0.jar"/>
 	<classpathentry kind="lib" path="lib/calendar/jgoodies-looks-2.4.1.jar"/>
 	<classpathentry kind="lib" path="lib/calendar/junit-4.6.jar"/>
+	<classpathentry kind="lib" path="lib/com.jaspersoft.studio.bundles.commons-digester_2.1.0.201709071631.jar"/>
+	<classpathentry kind="lib" path="lib/groovy_4.0.8.jar"/>
+	<classpathentry kind="lib" path="lib/jakarta.inject.jakarta.inject-api_2.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/jaxen_1.2.0.jar"/>
+	<classpathentry kind="lib" path="lib/org.apache.commons.commons-collections4_4.4.0.jar"/>
+	<classpathentry kind="lib" path="lib/org.apache.commons.logging_1.2.0.v20180409-1502.jar"/>
+	<classpathentry kind="lib" path="lib/jasperreports-7.0.3.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-annotations-2.13.5.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-core-2.13.5.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-databind-2.13.5.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-dataformat-xml-2.14.2.jar"/>
+	<classpathentry kind="lib" path="lib/stax2-api-4.2.jar"/>
+	<classpathentry kind="lib" path="lib/woodstox-core-6.4.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

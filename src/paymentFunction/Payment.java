@@ -3,6 +3,8 @@ package paymentFunction;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import conexao.Conexao;
 import objects.Reserve;
 
@@ -22,6 +24,10 @@ public class Payment {
 		this.metodoPagamento = metodoPagamento;
 		this.statusPagamento = statusPagamento;
 		this.dataPagamento = dataPagamento;
+	}
+
+	public Payment() {
+		// Construtor padrão
 	}
 
 	public int getId() {
@@ -90,27 +96,41 @@ public class Payment {
             e.printStackTrace();
             return 0;
         }}
+	public static boolean verificarPagamento(int idReserva) {
+		String sql = "SELECT COUNT(*) FROM pagamento WHERE id_reserva = ?";
+		List<Object> params = new ArrayList<>();
+		params.add(idReserva);
+
+		try {
+            int count = Conexao.executeScalar(sql, params);
+            if (count < 1) {
+                JOptionPane.showMessageDialog(null, "Nenhum pagamento já realizado para esta reserva.");
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            System.err.println("Erro ao verificar pagamento: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+	}
 	
-	public static int registrarConsumo(int id, int reserveId, double valorTotal, String metodoPagamento, String statusPagamento,  String dataPagamento) {
-        String sql = "INSERT INTO pagamento (id, reserva_id, valor_total, metodo_pagamento, status_pagamento, data_pagamento) VALUES (?, ?, ?, ?, ?, ?)";
+	public static int statusReserva(int idReserva) {
+        String sql = "UPDATE reserva r SET r.status = 'Concluída' WHERE r.id = ?";
         List<Object> params = new ArrayList<>();
-        //FALTA TERMINAR!!
-        params.add(id);
-        params.add(reserveId);
-        params.add(valorTotal);
-        params.add(metodoPagamento);
-        params.add(statusPagamento);
-        params.add(dataPagamento);
+        
+        params.add(idReserva);
         
         try {
             int rowsAffected = Conexao.executeUpdate(sql, params);
             return rowsAffected;
         } catch (Exception e) {
-            System.err.println("Erro ao registrar pagamento: " + e.getMessage());
+            System.err.println("Erro ao alterar status do pagamento: " + e.getMessage());
             e.printStackTrace();
             return 0;
-        }}
-
+        }
+	}
 	public static int estornarPagamento(int id) {
         String sql = "DELETE FROM pagamento WHERE id_reserva = ?";
         List<Object> params = new ArrayList<>();

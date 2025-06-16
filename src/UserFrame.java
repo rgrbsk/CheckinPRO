@@ -222,7 +222,7 @@ public class UserFrame extends JPanel {
 		add(btnVerHistorico);
 		
 		tabelaClientes.setModel(modelTable); 
-		//loadClientData(); 
+		
 		
 		
 		
@@ -237,10 +237,6 @@ public class UserFrame extends JPanel {
 		    }
 		});
 		
-	
-	
-		
-		//gatilhos e Listeners para acionar botões, aq.
 		btnCadastrarCliente.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
 		    	AddClientWindow.isEditMode = false;
@@ -403,11 +399,11 @@ public class UserFrame extends JPanel {
 		        }
 		    }
 		});
-		
+		btnSearchResults.doClick(); // roger: nao mexer
 	}
 		
 	public void atualizarTotalClientes() {
-	    if (lblTotalClientes == null) { // ✅ Evita erro caso `lblTotalClientes` ainda não tenha sido inicializado
+	    if (lblTotalClientes == null) { 
 	        System.err.println("Erro: lblTotalClientes não foi inicializado!");
 	        return;
 	    }
@@ -433,21 +429,6 @@ public class UserFrame extends JPanel {
 	}
 
 
-		private void loadClientData() {
-		    modelTable.setRowCount(0); 
-
-		    List<Client> clientes = Client.buscarClientes("nome", "", "");
-
-		    System.out.println("Total clients found: " + clientes.size());
-
-		    for (Client cliente : clientes) {
-		        modelTable.addRow(new Object[]{cliente.getId(), cliente.getNome(), cliente.getCpf(), cliente.getEmail(),
-		                cliente.getTelefone()});
-		    }
-
-		    tabelaClientes.setModel(modelTable); 
-
-		}
 		public static Integer tryParseInt(String valor) {
 		    try {
 		        return Integer.parseInt(valor);
