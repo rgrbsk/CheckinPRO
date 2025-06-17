@@ -98,7 +98,7 @@ public class UserFrame extends JPanel {
 		txtClientes.setAutoscrolls(false);
 		
 		JButton btnSearchResults = new JButton("");
-		btnSearchResults.setBounds(835, 76, 64, 34);
+		btnSearchResults.setBounds(848, 76, 64, 34);
 		btnSearchResults.setIcon(new ImageIcon(UserFrame.class.getResource("/img/icons8-pesquisar-30.png")));
 		btnSearchResults.setForeground(Color.WHITE);
 		add(btnSearchResults);

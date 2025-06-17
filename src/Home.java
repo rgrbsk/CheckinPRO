@@ -117,7 +117,7 @@ public class Home extends JFrame {
         btnClientes.setIcon(new ImageIcon(Home.class.getResource("/img/icons8-homem-de-negócios-30.png")));
         panelMenu.add(btnClientes);
         
-        JLabel lblVersion = new JLabel("Versão 0.0.1");
+        JLabel lblVersion = new JLabel("Versão 1.0");
         lblVersion.setForeground(new Color(255, 255, 255));
         lblVersion.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 14));
         lblVersion.setHorizontalAlignment(SwingConstants.CENTER);
