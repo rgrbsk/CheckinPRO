@@ -7,9 +7,9 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class Conexao { // Adicionar senha e trocar a porta
-    private static final String URL = "jdbc:mysql://localhost:3306/patp_ads3";
+    private static final String URL = "jdbc:mysql://localhost:3306/checkinpro";
     private static final String USER = "root"; 
-    private static final String PASSWORD = "12345"; //2424
+    private static final String PASSWORD = "1234567890"; //2424
     
     public static Connection getConnection() {
         try {

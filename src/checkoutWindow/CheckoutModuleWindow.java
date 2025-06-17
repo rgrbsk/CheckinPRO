@@ -704,8 +704,9 @@ public class CheckoutModuleWindow extends JPanel {
 	        textDataCheckin.setText(dateFormat.format(reserva.getDataCheckin()));
 	        textDataCheckout.setText(dateFormat.format(reserva.getDataCheckout()));
 
-	        if (textNumeroDiarias != null) {
+	        if (textNumeroDiarias  != null) {
 	            textNumeroDiarias.setText(String.valueOf(reserva.getNumeroDiarias()));
+	            
 	        }
 
 	        try {

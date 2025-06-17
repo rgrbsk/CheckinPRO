@@ -347,6 +347,9 @@ public class Reserve {
 	            Date dataCheckin = rs.getDate("data_checkin");
 	            Date dataCheckout = rs.getDate("data_checkout");
 	            int numeroDiarias = rs.getInt("numero_diarias");
+				if (rs.getInt("numero_diarias") == 0) {
+					numeroDiarias = 1;
+				}
 
 	            // Monta a reserva
 	            Reserve reserva = new Reserve(rs.getInt("id"), numeroQuarto, cliente);

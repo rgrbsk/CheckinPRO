@@ -44,7 +44,6 @@ public class CheckoutFrame extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private JTextField txtCheckout;
-	private JTextField textField;
 	private JTable tabelaReservas;
 	private DefaultTableModel modelTable;
 	public int reservaId;
@@ -79,7 +78,7 @@ public class CheckoutFrame extends JPanel {
 		panel.add(txtCheckout);
 		
 		JButton btnConfirmarSaida = new JButton("Confirmar Saída");
-		btnConfirmarSaida.setBounds(6, 62, 172, 34);
+		btnConfirmarSaida.setBounds(6, 75, 172, 34);
 		btnConfirmarSaida.setIcon(new ImageIcon(CheckoutFrame.class.getResource("/img/Share.png")));
 		btnConfirmarSaida.setForeground(Color.WHITE);
 		add(btnConfirmarSaida);
@@ -97,27 +96,15 @@ public class CheckoutFrame extends JPanel {
 		JButton btnEstornarPagamento = new JButton("Estornar Pagamento");
 
 		btnEstornarPagamento.setHorizontalAlignment(SwingConstants.LEFT);
-		btnEstornarPagamento.setBounds(198, 62, 193, 34);
+		btnEstornarPagamento.setBounds(199, 75, 193, 34);
 		btnEstornarPagamento.setIcon(new ImageIcon(CheckoutFrame.class.getResource("/img/Banknotes.png")));
 		btnEstornarPagamento.setForeground(Color.WHITE);
 		add(btnEstornarPagamento);
 		
 		JButton btnNewButtonSearch = new JButton("");
-		btnNewButtonSearch.setBounds(837, 75, 64, 34);
-		btnNewButtonSearch.setIcon(new ImageIcon(CheckoutFrame.class.getResource("/img/icons8-pesquisar-30.png")));
+		btnNewButtonSearch.setBounds(1222, 75, 64, 34);
+		btnNewButtonSearch.setIcon(new ImageIcon(CheckoutFrame.class.getResource("/img/icons8-actualizar-30 (1).png")));
 		add(btnNewButtonSearch);
-		
-		textField = new JTextField();
-		textField.setBounds(913, 75, 253, 34);
-		textField.setForeground(Color.WHITE);
-		textField.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		textField.setColumns(10);
-		add(textField);
-		
-		JComboBox<String> comboBoxFilter = new JComboBox<String>();
-		comboBoxFilter.setBounds(1178, 75, 108, 34);
-		comboBoxFilter.setForeground(Color.WHITE);
-		add(comboBoxFilter);
 		
 		JLabel lblReservaSelecionada = new JLabel("-");
 		lblReservaSelecionada.setForeground(Color.ORANGE);
@@ -185,7 +172,7 @@ public class CheckoutFrame extends JPanel {
         btnAddServicoReserva.setIcon(new ImageIcon(CheckoutFrame.class.getResource("/img/Bell32.png")));
         btnAddServicoReserva.setHorizontalAlignment(SwingConstants.LEFT);
         btnAddServicoReserva.setForeground(Color.WHITE);
-        btnAddServicoReserva.setBounds(416, 62, 172, 34);
+        btnAddServicoReserva.setBounds(414, 75, 172, 34);
         add(btnAddServicoReserva);
         
         JButton btnVerServicos = new JButton("Ver Serviços");
@@ -217,7 +204,7 @@ public class CheckoutFrame extends JPanel {
         btnVerServicos.setIcon(new ImageIcon(CheckoutFrame.class.getResource("/img/Contacts40.png")));
         btnVerServicos.setHorizontalAlignment(SwingConstants.LEFT);
         btnVerServicos.setForeground(Color.WHITE);
-        btnVerServicos.setBounds(606, 62, 172, 34);
+        btnVerServicos.setBounds(605, 75, 172, 34);
         add(btnVerServicos);
         
         JButton btnReimpressao = new JButton("Reimpressão");

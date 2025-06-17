@@ -124,7 +124,9 @@ public class ReserveService {
 	            int dias = rs.getInt("dias");
 	            double precoDiaria = rs.getDouble("preco_diaria");
 	            double totalServicos = rs.getDouble("total_servicos");
-
+				if (dias == 0) {
+					dias = 1;
+				}
 	            double totalHospedagem = dias * precoDiaria;
 	            return totalHospedagem + totalServicos;
 	        }
