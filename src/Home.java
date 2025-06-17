@@ -1,13 +1,24 @@
 
 
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Color;
+import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
-import com.formdev.flatlaf.FlatDarkLaf;
+
+import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 
 import serviceWindow.ServicesWindow;
-
-import java.awt.event.*;
 
 public class Home extends JFrame {
     private CheckinFrame checkinP;
@@ -22,7 +33,7 @@ public class Home extends JFrame {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    UIManager.setLookAndFeel(new FlatDarkLaf());
+                    UIManager.setLookAndFeel(new FlatMacDarkLaf());
                     Home frame = new Home();
                     frame.setUndecorated(false);
                     frame.setVisible(true);

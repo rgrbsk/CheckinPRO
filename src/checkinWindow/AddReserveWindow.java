@@ -145,6 +145,7 @@ public class AddReserveWindow {
         panelCheckDate.setLayout(null);
         
         dateChooserArrive = new JDateChooser();
+        dateChooserArrive.setForeground(new Color(255, 255, 255));
         dateChooserArrive.setBounds(27, 57, 152, 28);
         panelCheckDate.add(dateChooserArrive);
         

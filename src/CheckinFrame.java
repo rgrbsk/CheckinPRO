@@ -73,7 +73,7 @@ public class CheckinFrame extends JPanel {
 			}
 		});
 		btnNewButtonConfirmCheckin.setForeground(new Color(255, 255, 255));
-		btnNewButtonConfirmCheckin.setBounds(6, 60, 172, 34);
+		btnNewButtonConfirmCheckin.setBounds(6, 76, 172, 34);
 		add(btnNewButtonConfirmCheckin);
 		
 		JButton btnNewButtonAddCheckin = new JButton("Cadastrar Entrada");
@@ -88,7 +88,7 @@ public class CheckinFrame extends JPanel {
 			}
 		});
 		btnNewButtonAddCheckin.setForeground(new Color(255, 255, 255));
-		btnNewButtonAddCheckin.setBounds(198, 60, 172, 34);
+		btnNewButtonAddCheckin.setBounds(198, 76, 172, 34);
 		add(btnNewButtonAddCheckin);
 		
 		JScrollBar scrollBar = new JScrollBar();
@@ -134,7 +134,7 @@ public class CheckinFrame extends JPanel {
 			}
 		});
 		btnNewButtonDeleteReserve.setForeground(Color.WHITE);
-		btnNewButtonDeleteReserve.setBounds(10, 770, 172, 34);
+		btnNewButtonDeleteReserve.setBounds(389, 76, 172, 34);
 		add(btnNewButtonDeleteReserve);
 		
 		JButton btnNewButtonRefresh = new JButton("");
@@ -151,7 +151,7 @@ public class CheckinFrame extends JPanel {
 		
 		model = new DefaultTableModel(
 	            new Object[][] {}, 
-	            new String[] {"ID Reserva","Nome do Cliente","CPF","Quarto","Data de chegada","Data de Sida","Status"}
+	            new String[] {"ID Reserva","Nome do Cliente","CPF","Quarto","Data de chegada","Data de Saída","Status"}
 	        ) {
 	            @Override
 	            public boolean isCellEditable(int row, int column) {

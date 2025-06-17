@@ -132,7 +132,7 @@ public class UserFrame extends JPanel {
 
 		JButton btnCadastrarCliente = new JButton("Cadastrar Cliente");
 		btnCadastrarCliente.setIcon(new ImageIcon(UserFrame.class.getResource("/img/Adicionar.png")));
-		btnCadastrarCliente.setBounds(10, 66, 172, 34);
+		btnCadastrarCliente.setBounds(6, 76, 172, 34);
 		add(btnCadastrarCliente);
 		
 		JPanel panelCustomFooter = new JPanel();
@@ -199,11 +199,11 @@ public class UserFrame extends JPanel {
 		
 		JButton btnEditarCadastro = new JButton("Visualizar / Editar Cadastro");
 		btnEditarCadastro.setIcon(new ImageIcon(UserFrame.class.getResource("/img/EditarC.png")));
-		btnEditarCadastro.setBounds(6, 776, 218, 34);
+		btnEditarCadastro.setBounds(392, 76, 218, 34);
 		add(btnEditarCadastro);
 		JButton btnExcluirCadastro = new JButton("Excluir Cadastro");
 		btnExcluirCadastro.setIcon(new ImageIcon(UserFrame.class.getResource("/img/DeletarC.png")));
-		btnExcluirCadastro.setBounds(251, 776, 172, 34);
+		btnExcluirCadastro.setBounds(631, 76, 172, 34);
 		add(btnExcluirCadastro);
 		
 		JLabel lblMaxRegistros = new JLabel("Máximo de registros a serem exibidos: 1000");
@@ -218,7 +218,7 @@ public class UserFrame extends JPanel {
 		
 		JButton btnVerHistorico = new JButton("Histórico");
 		btnVerHistorico.setIcon(new ImageIcon(UserFrame.class.getResource("/img/Bookmark.png")));
-		btnVerHistorico.setBounds(192, 66, 172, 34);
+		btnVerHistorico.setBounds(200, 76, 172, 34);
 		add(btnVerHistorico);
 		
 		tabelaClientes.setModel(modelTable); 

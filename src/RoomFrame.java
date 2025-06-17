@@ -96,7 +96,7 @@ public class RoomFrame extends JPanel {
             }
         });
         btnNewButtonDeleteRoom.setForeground(Color.WHITE);
-        btnNewButtonDeleteRoom.setBounds(190, 770, 172, 34);
+        btnNewButtonDeleteRoom.setBounds(203, 73, 172, 34);
         add(btnNewButtonDeleteRoom);
 
         JButton btnNewButtonAddRoom = new JButton("Adicionar Quarto");
@@ -109,7 +109,7 @@ public class RoomFrame extends JPanel {
             }
         });
         btnNewButtonAddRoom.setForeground(Color.WHITE);
-        btnNewButtonAddRoom.setBounds(6, 770, 172, 34);
+        btnNewButtonAddRoom.setBounds(6, 73, 172, 34);
         add(btnNewButtonAddRoom);
 
         JButton btnNewButtonRefresh = new JButton("");
@@ -174,7 +174,7 @@ public class RoomFrame extends JPanel {
         	}
         });
         btnNewButtonEditRoom.setForeground(Color.WHITE);
-        btnNewButtonEditRoom.setBounds(374, 770, 172, 34);
+        btnNewButtonEditRoom.setBounds(399, 73, 172, 34);
         add(btnNewButtonEditRoom);
 
         loadData();
