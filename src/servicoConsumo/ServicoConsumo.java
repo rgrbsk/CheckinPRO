@@ -1,6 +1,7 @@
 package servicoConsumo;
 
 public class ServicoConsumo {
+	
     private String nome;
     private int quantidade;
     private double valorUnitario;

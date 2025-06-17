@@ -2,6 +2,7 @@ package checkoutWindow;
 
 import java.awt.Color;
 
+
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -40,11 +41,21 @@ import objects.Room;
 import paymentFunction.Payment;
 import reserveService.ReserveService;
 import servicoConsumo.ServicoConsumo;
+import systemReports.GerarRelatorios;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JCheckBox;
 import javax.swing.JTabbedPane;
+//importar jasper
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.view.JasperViewer;
+
+import java.util.HashMap;
+import java.util.Map;
+
 
 //import PagamentoDialog;
 
@@ -59,17 +70,18 @@ public class CheckoutModuleWindow extends JPanel {
 	private JTextField textNomeCliente;
 	private JTextField textValorTotal;
 	private JTextField textMetodoPagamento;
-	private JTextField textField_6;
-	private JTextField textField_7;
-	private JTextField textField_8;
+	private JTextField textParcelas;
+	private JTextField textFrigobar;
+	private JTextField textOutros;
 	private JTextField textCpfCliente;
 	private JTextField textIdCliente;
-	private JTextField textField;
-	private JTextField textField_1;
+	private JTextField textValorInicial;
+	private JTextField textValorComServicos;
 	private JTextField textNumeroDiarias;
 	private JTextField textDataCheckin;
 	private JTextField textDataCheckout;
 	private JTable tabelaConsumption;
+	private JTextField textPercentageDiscount;
 
 	public JFrame getFrame() {
 		return frame; // ✅ Certifique-se de que retorna a instância correta
@@ -133,73 +145,63 @@ public class CheckoutModuleWindow extends JPanel {
     	    DefaultTableModel modelConsumption = new DefaultTableModel(null, colunasConsumo);
     	    JTable tabelaConsumption = new JTable(modelConsumption);
     	    JScrollPane scrollPaneConsumo = new JScrollPane(tabelaConsumption);
-    	    scrollPaneConsumo.setBounds(30, 50, 650, 400);
+    	    scrollPaneConsumo.setBounds(0, 55, 650, 400);
     	    consumptionPanel.add(scrollPaneConsumo);
 
     	  
-    	    JLabel lblTotalConsumo = new JLabel("Serviços Extras");
+    	    JLabel lblTotalConsumo = new JLabel("Desconto (-)");
     	    lblTotalConsumo.setForeground(Color.GREEN);
     	    lblTotalConsumo.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-    	    lblTotalConsumo.setBounds(58, 461, 132, 22);
+    	    lblTotalConsumo.setBounds(518, 460, 132, 22);
     	    consumptionPanel.add(lblTotalConsumo);
 
-    	    JTextField txtTotalConsumo = new JTextField();
-    	    txtTotalConsumo.setBounds(40, 489, 150, 22);
-    	    txtTotalConsumo.setEditable(false);
-    	    consumptionPanel.add(txtTotalConsumo);
+    	    JTextField textValorDesconto = new JTextField();
+    	    textValorDesconto.setText("0");
+    	    textValorDesconto.setBounds(500, 488, 150, 22);
+    	    consumptionPanel.add(textValorDesconto);
     	    
-    	    JLabel lblProdFrigobar = new JLabel("Prod. Frigobar ($)");
+    	    JLabel lblProdFrigobar = new JLabel("Adicional Frigobar ($)");
     	    lblProdFrigobar.setForeground(Color.GREEN);
     	    lblProdFrigobar.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-    	    lblProdFrigobar.setBounds(298, 461, 138, 22);
+    	    lblProdFrigobar.setBounds(274, 460, 181, 22);
     	    consumptionPanel.add(lblProdFrigobar);
     	    
-    	    textField_7 = new JTextField();
-    	    textField_7.setEditable(false);
-    	    textField_7.setBounds(286, 489, 150, 22);
-    	    consumptionPanel.add(textField_7);
+    	    textFrigobar = new JTextField();
+    	    textFrigobar.setText("0");
+    	    textFrigobar.setBounds(274, 489, 164, 22);
+    	    consumptionPanel.add(textFrigobar);
     	    
-    	    JLabel lblDanosAoQuarto = new JLabel("Outros ($)");
+    	    JLabel lblDanosAoQuarto = new JLabel("Valores Adicionais ($)");
     	    lblDanosAoQuarto.setForeground(new Color(128, 0, 0));
     	    lblDanosAoQuarto.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-    	    lblDanosAoQuarto.setBounds(510, 461, 200, 22);
+    	    lblDanosAoQuarto.setBounds(47, 460, 150, 22);
     	    consumptionPanel.add(lblDanosAoQuarto);
     	    
-    	    textField_8 = new JTextField();
-    	    textField_8.setEditable(false);
-    	    textField_8.setBounds(510, 489, 150, 22);
-    	    consumptionPanel.add(textField_8);
+    	    textOutros = new JTextField();
+    	    textOutros.setText("0");
+    	    textOutros.setBounds(47, 488, 150, 22);
+    	    consumptionPanel.add(textOutros);
     	    
-    	    JButton btnNewButton = new JButton("");
-    	    btnNewButton.setIcon(new ImageIcon(CheckoutModuleWindow.class.getResource("/img/icons8-pesquisar-30.png")));
-    	    btnNewButton.setBounds(187, 480, 41, 32);
-    	    consumptionPanel.add(btnNewButton);
+    	    textValorInicial = new JTextField();
+    	    textValorInicial.setEditable(false);
+    	    textValorInicial.setBounds(114, 22, 150, 22);
+    	    consumptionPanel.add(textValorInicial);
     	    
-    	    textField = new JTextField();
-    	    textField.setEditable(false);
-    	    textField.setBounds(114, 22, 150, 22);
-    	    consumptionPanel.add(textField);
-    	    
-    	    textField_1 = new JTextField();
-    	    textField_1.setEditable(false);
-    	    textField_1.setBounds(424, 22, 150, 22);
-    	    consumptionPanel.add(textField_1);
+    	    textValorComServicos = new JTextField();
+    	    textValorComServicos.setEditable(false);
+    	    textValorComServicos.setBounds(444, 22, 150, 22);
+    	    consumptionPanel.add(textValorComServicos);
     	    
     	    JLabel lblNewLabel_2 = new JLabel("Valor Inicial");
     	    lblNewLabel_2.setBounds(47, 25, 119, 14);
     	    consumptionPanel.add(lblNewLabel_2);
     	    
-    	    JLabel lblNewLabel_2_1 = new JLabel("Valor c/ Consumo e Serv.");
-    	    lblNewLabel_2_1.setBounds(286, 26, 150, 14);
+    	    JLabel lblNewLabel_2_1 = new JLabel("Valor Final");
+    	    lblNewLabel_2_1.setBounds(378, 26, 73, 14);
     	    consumptionPanel.add(lblNewLabel_2_1);
     	    
-    	    JButton btnFinalizarConsumo_1 = new JButton("");
-    	    btnFinalizarConsumo_1.setIcon(new ImageIcon(CheckoutModuleWindow.class.getResource("/img/icons8-actualizar-30 (1).png")));
-    	    btnFinalizarConsumo_1.setBounds(199, 561, 96, 39);
-    	    consumptionPanel.add(btnFinalizarConsumo_1);
-    	    
-    	    JButton btnBuscarServicos = new JButton("Buscar Serviços");
-    	    btnBuscarServicos.setIcon(new ImageIcon(CheckoutModuleWindow.class.getResource("/img/icons8-pesquisar-30.png")));
+    	    JButton btnBuscarServicos = new JButton("Calcular");
+    	    btnBuscarServicos.setIcon(new ImageIcon(CheckoutModuleWindow.class.getResource("/img/Estimate.png")));
     	    
 
     	    
@@ -221,7 +223,7 @@ public class CheckoutModuleWindow extends JPanel {
     	    paymentPanel.add(panelCheckDate_2);
     	    
     	    textValorTotal = new JTextField();
-    	    textValorTotal.setText("1");
+    	    textValorTotal.setText("0");
     	    textValorTotal.setEditable(false);
     	    textValorTotal.setColumns(10);
     	    textValorTotal.setBounds(117, 23, 206, 22);
@@ -271,10 +273,12 @@ public class CheckoutModuleWindow extends JPanel {
     	    panelCheckDate_1.add(btnPagTransferencia);
     	    
     	    JComboBox comboCartoes = new JComboBox();
+    	    
     	    comboCartoes.setBounds(86, 148, 168, 22);
     	    panelCheckDate_1.add(comboCartoes);
-    	    comboCartoes.addItem("Cartão de Crédito");
     	    comboCartoes.addItem("Cartão de Débito");
+    	    comboCartoes.addItem("Cartão de Crédito");
+    	    
     	    
     	    JButton btnPagOutro = new JButton("Outro");
     	    btnPagOutro.addActionListener(new ActionListener() {
@@ -290,15 +294,17 @@ public class CheckoutModuleWindow extends JPanel {
     	    btnPagPix.setBounds(86, 276, 168, 44);
     	    panelCheckDate_1.add(btnPagPix);
     	    
-    	    textField_6 = new JTextField();
-    	    textField_6.setColumns(10);
-    	    textField_6.setBounds(264, 148, 45, 22);
-    	    panelCheckDate_1.add(textField_6);
+    	    textParcelas = new JTextField();
+    	    textParcelas.setColumns(10);
+    	    textParcelas.setBounds(264, 148, 45, 22);
+    	    panelCheckDate_1.add(textParcelas);
     	    
-    	    JLabel lblNewLabel_1_1 = new JLabel("Parcelas");
-    	    lblNewLabel_1_1.setForeground(Color.GREEN);
-    	    lblNewLabel_1_1.setBounds(264, 134, 45, 14);
-    	    panelCheckDate_1.add(lblNewLabel_1_1);
+    	    JLabel labelParcelas = new JLabel("Parcelas");
+    	    labelParcelas.setForeground(Color.GREEN);
+    	    labelParcelas.setBounds(264, 134, 45, 14);
+    	    panelCheckDate_1.add(labelParcelas);
+    	    labelParcelas.setVisible(false);
+    	    textParcelas.setVisible(false);
     	    
     	    JButton btnFinalizarPagamento = new JButton("Finalizar");
     	    
@@ -418,34 +424,152 @@ public class CheckoutModuleWindow extends JPanel {
     	    panelCheckDate_2_1.add(lblEntrada);
     	    textIdCliente.setVisible(false);
     	    
+    	    btnBuscarServicos.setBounds(258, 550, 205, 52);
+    	    consumptionPanel.add(btnBuscarServicos);
+    	    
+    	    JButton btnPercentage = new JButton("");
+    	    
+    	    btnPercentage.setIcon(new ImageIcon(CheckoutModuleWindow.class.getResource("/img/DiscountSized.png")));
+    	    btnPercentage.setBounds(519, 542, 53, 40);
+    	    consumptionPanel.add(btnPercentage);
+    	    btnPercentage.setVisible(false);
+    	    
+    	    textPercentageDiscount = new JTextField();
+    	    textPercentageDiscount.setEditable(false);
+    	    textPercentageDiscount.setBounds(569, 550, 53, 22);
+    	    consumptionPanel.add(textPercentageDiscount);
+    	    textPercentageDiscount.setVisible(false);
+    	    
+    	    JCheckBox checkDescontoPorcentagem = new JCheckBox("Desconto Por Porcentagem");
+    	    checkDescontoPorcentagem.addActionListener(new ActionListener() {
+    	    	public void actionPerformed(ActionEvent e) {
+					if (checkDescontoPorcentagem.isSelected()) {
+						btnPercentage.setVisible(true);
+						textPercentageDiscount.setVisible(true);
+						textPercentageDiscount.setEditable(true);
+					} else {
+						btnPercentage.setVisible(false);
+						textPercentageDiscount.setVisible(false);
+						textPercentageDiscount.setEditable(false);
+						textPercentageDiscount.setText("0");
+					}
+    	    	}
+    	    });
+    	    checkDescontoPorcentagem.setBounds(496, 516, 181, 21);
+    	    consumptionPanel.add(checkDescontoPorcentagem);
+    	    
+    	    JLabel infoInicial = new JLabel("");
+    	    infoInicial.setToolTipText("(Valor do Quarto (Diária) x Número de Hóspedes) + Valor Total dos Serviços = Valor Inicial");
+    	    infoInicial.setIcon(new ImageIcon(CheckoutModuleWindow.class.getResource("/img/Info.png")));
+    	    infoInicial.setBounds(270, 22, 25, 22);
+    	    consumptionPanel.add(infoInicial);
+    	    
+    	    JLabel infoFinal = new JLabel("");
+    	    infoFinal.setToolTipText("Valor Inicial + Frigobar + Outros - Desconto = Valor Final");
+    	    infoFinal.setIcon(new ImageIcon(CheckoutModuleWindow.class.getResource("/img/Info.png")));
+    	    infoFinal.setBounds(600, 22, 25, 22);
+    	    consumptionPanel.add(infoFinal);
+    	    
+    	    
+    	    comboCartoes.addActionListener(new ActionListener() {
+    	    	public void actionPerformed(ActionEvent e) {
+					if (comboCartoes.getSelectedItem() != null) {
+						String selectedItem = comboCartoes.getSelectedItem().toString();
+						if (selectedItem.equals("Cartão de Crédito")) {
+							textParcelas.setVisible(true);
+							labelParcelas.setVisible(true);
+						} else {
+							textParcelas.setVisible(false);
+							labelParcelas.setVisible(false);
+						}
+					}
+    	    	}
+    	    });
+    	    
+    	    tabbedPane.addChangeListener(e -> {
+    	        int selectedIndex = tabbedPane.getSelectedIndex();
+    	        String tabTitle = tabbedPane.getTitleAt(selectedIndex);
+
+    	        if ("Consumo".equals(tabTitle)) { 
+    	            btnBuscarServicos.doClick(); 
+    	        }
+    	    });
+    	    btnPercentage.addActionListener(new ActionListener() {
+    	        public void actionPerformed(ActionEvent e) { 	            
+    	            String porcentagemTexto = textPercentageDiscount.getText().replace(",", ".");
+    	            double porcentagem = porcentagemTexto.isEmpty() ? 0.0 : Double.parseDouble(porcentagemTexto);
+
+    	            if (porcentagem < 1 || porcentagem > 100) {
+    	                JOptionPane.showMessageDialog(null, "Porcentagem inválida! Deve ser entre 1 e 100.", "Erro",
+    	                        JOptionPane.ERROR_MESSAGE);
+    	                return;
+    	            }
+    	            double totalBase = textValorInicial.getText().isEmpty() ? 0.0 : Double.parseDouble(textValorInicial.getText().replace(",", "."));
+    	            double valorOutros = textOutros.getText().isEmpty() ? 0.0 : Double.parseDouble(textOutros.getText().replace(",", "."));
+    	            double valorFrigobar = textFrigobar.getText().isEmpty() ? 0.0 : Double.parseDouble(textFrigobar.getText().replace(",", "."));
+
+    	            double totalComExtras = totalBase + valorOutros + valorFrigobar;
+
+    	            double descontoCalculado = totalComExtras * (porcentagem / 100);
+    	            double valorFinal = totalComExtras - descontoCalculado;
+
+    	            JOptionPane.showMessageDialog(null, "Desconto aplicado: " + porcentagem + "%", "Desconto",
+    	                    JOptionPane.INFORMATION_MESSAGE);
+
+    	            // Atualizar os campos corretamente
+    	            textValorTotal.setText(String.format("%.2f", valorFinal));
+    	            textValorComServicos.setText(String.format("%.2f", valorFinal));
+    	           
+    	            textValorDesconto.setText(String.format("%.2f", descontoCalculado)); // Exibir o valor do desconto aplicado
+    	        }
+    	    });
+
+    	    
     	    btnBuscarServicos.addActionListener(new ActionListener() {
     	        @Override
     	        public void actionPerformed(ActionEvent e) {
-    	            try {
-    	                int reservaId = textIdReserva.getText().isEmpty() ? 0 : Integer.parseInt(textIdReserva.getText());
-    	                List<ServicoConsumo> consumos = ReserveService.buscarServicosVinculados(reservaId);
+    	            String textoId = textIdReserva.getText().trim();
+    	            if (textoId.isEmpty()) {
+    	                JOptionPane.showMessageDialog(null, "Informe um ID de reserva válido.", "Aviso", JOptionPane.WARNING_MESSAGE);
+    	                return;
+    	            }
 
+    	            try {
+    	                int reservaId = Integer.parseInt(textoId);
+
+    	                double totalBase = ReserveService.calcularValorTotalReserva(reservaId);
+    	                textValorInicial.setText(String.format("%.2f", totalBase));
+    	                
+    	                double valorOutros = textOutros.getText().isEmpty() ? 0.0 : Double.parseDouble(textOutros.getText());
+    	                double valorFrigobar = textFrigobar.getText().isEmpty() ? 0.0 : Double.parseDouble(textFrigobar.getText());
+    	                
+    	                String valorDescTexto = textValorDesconto.getText().trim().replace(",", ".");
+    	                double valorDesconto = valorDescTexto.isEmpty() ? 0.0 : Double.parseDouble(valorDescTexto);
+
+    	                double valorFinal =  totalBase + valorOutros + valorFrigobar - valorDesconto;
+    	                
+    	                textValorComServicos.setText(String.format("%.2f", valorFinal));
+    	                textValorTotal.setText(String.format("%.2f", valorFinal));
+    	               
+    	                List<ServicoConsumo> consumos = ReserveService.buscarServicosVinculados(reservaId);
     	                DefaultTableModel model = (DefaultTableModel) tabelaConsumption.getModel();
-    	                model.setRowCount(0); // Limpa a tabela
+    	                model.setRowCount(0);
 
     	                for (ServicoConsumo item : consumos) {
-    	                    model.addRow(new Object[] {
+    	                    model.addRow(new Object[]{
     	                        item.getNome(),
     	                        item.getQuantidade(),
     	                        String.format("R$ %.2f", item.getValorUnitario()),
     	                        String.format("R$ %.2f", item.getTotal())
     	                    });
     	                }
-    	            } catch (NumberFormatException ex) {
-    	                JOptionPane.showMessageDialog(null, "ID da reserva inválido.", "Erro", JOptionPane.ERROR_MESSAGE);
+    	            
     	            } catch (Exception ex) {
-    	                JOptionPane.showMessageDialog(null, "Erro ao buscar serviços vinculados: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+    	                JOptionPane.showMessageDialog(null, "Erro ao buscar dados da reserva: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
     	                ex.printStackTrace();
     	            }
     	        }
     	    });
-    	    btnBuscarServicos.setBounds(298, 548, 164, 52);
-    	    consumptionPanel.add(btnBuscarServicos);
     	    
     	    
     	    
@@ -453,50 +577,72 @@ public class CheckoutModuleWindow extends JPanel {
     	    btnFinalizarPagamento.addActionListener(new ActionListener() {
     	        @Override
     	        public void actionPerformed(ActionEvent e) {
-    	        	
     	            try {
-    	               
-    	                int id = Integer.parseInt(textIdCliente.getText());
-    	                int reserveId = Integer.parseInt(textIdReserva.getText());
-    	                double valorTotal = Double.parseDouble(textValorTotal.getText());
-    	                String metodoPagamento = (String) textMetodoPagamento.getText();
-    	              //  String statusPagamento = (String) extStatusPagamento.getText();
-    	                long timestamp = System.currentTimeMillis(); // 
-    	                SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
-    	                String dataPagamento = formato.format(new Date(timestamp)); 
+    	                int idCliente = Integer.parseInt(textIdCliente.getText().trim());
+    	                int reservaId = Integer.parseInt(textIdReserva.getText().trim());
 
-    	              
-    	                int resultado = Payment.registrarPagamento(1, reserveId, valorTotal, metodoPagamento, "Concluído", dataPagamento);
+    	                String textoValor = textValorTotal.getText()
+    	                    .replace("R$", "")
+    	                    .replace(".", "")
+    	                    .replace(",", ".")
+    	                    .trim();
 
-    	                if (resultado > 0) {
-    	                	
-    	                    JOptionPane.showMessageDialog(null, "Pagamento registrado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-    	                    frameCheckoutPayment.dispose();
-    	                    String[] options = {"Sim", "Não"};
-    	    		        int confirm = JOptionPane.showOptionDialog(
-    	    		            null, 
-    	    		            "Deseja Emitir o Recibo de Estadia?", 
-    	    		            "Emissão de Recibo", 
-    	    		            JOptionPane.YES_NO_OPTION, 
-    	    		            JOptionPane.QUESTION_MESSAGE, 
-    	    		            null, // No cu
-    	    		            options, 
-    	    		            options[0]
-    	    		            		
-    	    		        );
-    	                } else {
-    	                    JOptionPane.showMessageDialog(null, "Erro ao registrar pagamento.", "Erro", JOptionPane.ERROR_MESSAGE);
+    	                double valorTotal = Double.parseDouble(textoValor);
+
+    	                String metodoPagamento = textMetodoPagamento.getText().trim();
+    	                if (metodoPagamento.isEmpty()) {
+    	                    JOptionPane.showMessageDialog(null, "Informe o método de pagamento.", "Aviso", JOptionPane.WARNING_MESSAGE);
+    	                    return;
     	                }
 
+    	                String dataPagamento = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+
+    	                int resultado = Payment.registrarPagamento(idCliente, reservaId, valorTotal, metodoPagamento, "Concluído", dataPagamento);
+    	                int statusAlterado = Payment.statusReserva(reservaId);
+    	                System.out.println("Linhas atualizadas no statusReserva: " + statusAlterado);
+
+    	                if (resultado > 0) {
+    	                    JOptionPane.showMessageDialog(null, "Pagamento registrado com sucesso! \n A reserva foi concluída.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+    	                    frameCheckoutPayment.dispose();
+
+    	                    String[] options = {"Sim", "Não"};
+    	                    int confirm = JOptionPane.showOptionDialog(
+    	                        null,
+    	                        "Deseja emitir o recibo de estadia?",
+    	                        "Emissão de Recibo",
+    	                        JOptionPane.YES_NO_OPTION,
+    	                        JOptionPane.QUESTION_MESSAGE,
+    	                        null,
+    	                        options,
+    	                        options[0]
+    	                    );
+
+    	                    if (confirm == JOptionPane.YES_OPTION) {
+    	                    	if (confirm == JOptionPane.YES_OPTION) {
+    	                    	    GerarRelatorios.gerarRecibo(reservaId);
+    	                    	}
+								//JasperCompileManager.compileReportToFile("src/systemReports/ReciboPdf.jrxml",
+										//"src/systemReports/ReciboPdf.jasper");
+								//JasperPrint jasperPrint = JasperFillManager.fillReport(
+										//"src/systemReports/ReciboPdf.jasper", null, Conexao.getConnection());
+								//JasperViewer.viewReport(jasperPrint, false);
+    	                    }
+
+    	                } else {
+    	                    JOptionPane.showMessageDialog(null,
+    	                        "Erro ao registrar pagamento.\nVerifique se já existe um pagamento para esta reserva.\nEstorne os pagamentos existentes antes de prosseguir.",
+    	                        "Erro", JOptionPane.ERROR_MESSAGE);
+    	                }
+
+    	            } catch (NumberFormatException ex) {
+    	                JOptionPane.showMessageDialog(null, "Erro de conversão numérica. Verifique os campos preenchidos.", "Erro", JOptionPane.ERROR_MESSAGE);
     	            } catch (Exception ex) {
     	                JOptionPane.showMessageDialog(null, "Erro ao processar pagamento: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
     	                ex.printStackTrace();
     	            }
     	        }
-    	        
-    	    
-    	        
     	    });
+
     	    btnPagDinheiro.addActionListener(new ActionListener() {
     	        @Override
     	        public void actionPerformed(ActionEvent e) {
@@ -506,13 +652,20 @@ public class CheckoutModuleWindow extends JPanel {
 			btnPagCartao.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					textMetodoPagamento.setText("Cartão");
+					String selectedItem = comboCartoes.getSelectedItem().toString();
+					if (selectedItem.equals("Cartão de Crédito")) {
+						textMetodoPagamento.setText("Crédito");
+					} else {
+						textMetodoPagamento.setText("Débito");
+					}
+					
 				}
 			});
 			btnPagTransferencia.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					textMetodoPagamento.setText("Transferência Bancária");
+					JOptionPane.showMessageDialog(infoFinal, "Função em andamento.");
+					//textMetodoPagamento.setText("Transferência Bancária");
 				}
 			});
 			btnPagPix.addActionListener(new ActionListener() {
@@ -534,47 +687,37 @@ public class CheckoutModuleWindow extends JPanel {
 				}
 			});
 	}
-	public void preencherTabelaConsumo(int reservaId) {
-	    DefaultTableModel model = (DefaultTableModel) tabelaConsumption.getModel();
-	    model.setRowCount(0); // limpa a tabela
-
-	    List<ServicoConsumo> consumos = ReserveService.buscarServicosVinculados(reservaId);
-
-	    for (ServicoConsumo item : consumos) {
-	        model.addRow(new Object[] {
-	            item.getNome(),
-	            item.getQuantidade(),
-	            String.format("R$ %.2f", item.getValorUnitario()),
-	            String.format("R$ %.2f", item.getTotal())
-	        });
-	    }
-	}
+	
 
 
 	public void preencherCamposCheckout(int reservaId) {
 	    Reserve reserva = Reserve.buscarReservaPorId(reservaId);
 
 	    if (reserva != null) {
-	        // Cliente
 	        textNomeCliente.setText(reserva.getCliente().getNome());
 	        textCpfCliente.setText(reserva.getCliente().getCpf());
 	        textIdCliente.setText(String.valueOf(reserva.getCliente().getId()));
-
-	     
 	        textIdQuarto.setText(String.valueOf(reserva.getNumero_quarto()));
 	        textIdReserva.setText(String.valueOf(reserva.getId()));
 
-	       
 	        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 	        textDataCheckin.setText(dateFormat.format(reserva.getDataCheckin()));
 	        textDataCheckout.setText(dateFormat.format(reserva.getDataCheckout()));
 
-	      
 	        if (textNumeroDiarias != null) {
 	            textNumeroDiarias.setText(String.valueOf(reserva.getNumeroDiarias()));
+	        }
+
+	        try {
+	            double total = ReserveService.calcularValorTotalReserva(reserva.getId());
+	            textValorInicial.setText(String.format("%.2f", total));
+	        } catch (Exception ex) {
+	            JOptionPane.showMessageDialog(null, "Erro ao calcular valor total: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+	            ex.printStackTrace();
 	        }
 
 	    } else {
 	        JOptionPane.showMessageDialog(null, "Erro ao carregar reserva!", "Aviso", JOptionPane.WARNING_MESSAGE);
 	    }
-	}}
+	}	
+	}

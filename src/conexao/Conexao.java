@@ -87,6 +87,23 @@ public class Conexao { // Adicionar senha e trocar a porta
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        }
+        }}
         //seja louvado o gpt e deepseek kkkkkk video de meia hora n tinha dado mt certo
+        public static int executeScalar(String sql, List<Object> parametros) {
+            try (Connection conn = getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+                for (int i = 0; i < parametros.size(); i++) {
+                    stmt.setObject(i + 1, parametros.get(i));
+                }
+
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) {
+                    return rs.getInt(1); // First column value
+                }
+            } catch (Exception e) {
+                System.err.println("Erro no executeScalar: " + e.getMessage());
+            }
+            return 0; // Default case when query fails or no result
+        
     }}
