@@ -119,15 +119,7 @@ public class UserFrame extends JPanel {
 		scrollPane.setEnabled(false);
 		scrollPane.setBounds(6, 121, 1280, 620);
 		add(scrollPane);
-		tabelaClientes.setShowGrid(true); 
-
-
-		
-		JButton btnNewButtonRefresh = new JButton("");
-		btnNewButtonRefresh.setBounds(1212, 776, 74, 34);
-		btnNewButtonRefresh.setIcon(new ImageIcon(UserFrame.class.getResource("/img/icons8-actualizar-30 (1).png")));
-		btnNewButtonRefresh.setForeground(Color.WHITE);
-		add(btnNewButtonRefresh);
+		tabelaClientes.setShowGrid(true);
 		
 
 		JButton btnCadastrarCliente = new JButton("Cadastrar Cliente");

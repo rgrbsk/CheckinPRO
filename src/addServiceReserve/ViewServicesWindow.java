@@ -44,6 +44,8 @@ public class ViewServicesWindow extends JFrame {
 		setBounds(100, 100, 571, 614);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setLocationRelativeTo(null);
+
 
 		setContentPane(contentPane);
 		contentPane.setLayout(null);

@@ -48,6 +48,8 @@ public class ServiceReserveWindow extends JFrame {
         frameServiceReserve.setBounds(100, 100, 617, 704);
         frameServiceReserve.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frameServiceReserve.getContentPane().setLayout(null);
+        setLocationRelativeTo(null);
+        frameServiceReserve.setResizable(false);
         
         
 

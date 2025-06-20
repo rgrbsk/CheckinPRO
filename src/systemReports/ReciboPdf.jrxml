@@ -1,8 +1,9 @@
 <!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 7.0.3-41034ca841d452f3305ba55b9042260aaa1ab5dd  -->
 <jasperReport name="ReciboPdf" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b0678fdc-c428-47b2-ab90-d0d7c03e72b8">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="JConCheckinPro"/>
-	<query language="SQL"><![CDATA[SELECT * FROM reserva r LEFT JOIN cliente c ON r.id_cliente = c.id_cliente LEFT JOIN quarto q ON r.id_quarto = q.id LEFT JOIN reserva_servico rs on rs.reservas_id = r.id LEFT JOIN servicos_extra se on rs.id_servico = se.id_servico WHERE r.id = $P{reservaId}]]></query>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CheckinPro"/>
+	<parameter name="reservaId" class="java.lang.Integer"/>
+	<query language="SQL"><![CDATA[SELECT * FROM reserva r LEFT JOIN cliente c ON r.id_cliente = c.id_cliente LEFT JOIN quarto q ON r.id_quarto = q.id LEFT JOIN reserva_servico rs on rs.reservas_id = r.id LEFT JOIN servicos_extra se on rs.id_servico = se.id_servico LEFT JOIN pagamento p on r.id = p.id_reserva WHERE r.id = $P{reservaId}]]></query>
 	<field name="id" class="java.lang.Integer">
 		<property name="com.jaspersoft.studio.field.name" value="id"/>
 		<property name="com.jaspersoft.studio.field.label" value="id"/>
@@ -173,44 +174,144 @@
 		<property name="com.jaspersoft.studio.field.label" value="valor"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="servicos_extra"/>
 	</field>
+	<field name="COLUMN_35" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.name" value="id"/>
+		<property name="com.jaspersoft.studio.field.label" value="id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pagamento"/>
+	</field>
+	<field name="COLUMN_36" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="id_reserva"/>
+		<property name="com.jaspersoft.studio.field.label" value="id_reserva"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pagamento"/>
+	</field>
+	<field name="valor_total" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="valor_total"/>
+		<property name="com.jaspersoft.studio.field.label" value="valor_total"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pagamento"/>
+	</field>
+	<field name="metodo_pagamento" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="metodo_pagamento"/>
+		<property name="com.jaspersoft.studio.field.label" value="metodo_pagamento"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pagamento"/>
+	</field>
+	<field name="status_pagamento" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="status_pagamento"/>
+		<property name="com.jaspersoft.studio.field.label" value="status_pagamento"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pagamento"/>
+	</field>
+	<field name="data_pagamento" class="java.time.LocalDateTime">
+		<property name="com.jaspersoft.studio.field.name" value="data_pagamento"/>
+		<property name="com.jaspersoft.studio.field.label" value="data_pagamento"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pagamento"/>
+	</field>
+	<variable name="total" calculation="Sum" class="java.lang.String"/>
+	<variable name="totalSum" calculation="Sum" class="java.lang.Double">
+		<expression><![CDATA[$F{valor}]]></expression>
+	</variable>
+	<group name="Group1">
+		<groupHeader>
+			<band height="127">
+				<element kind="textField" uuid="e42ab419-2250-41d5-96c4-02b075ce2f41" x="-2" y="30" width="95" height="30" hTextAlign="Center">
+					<expression><![CDATA[$F{id}]]></expression>
+				</element>
+				<element kind="textField" uuid="2dfe0329-0d20-4098-882c-ae172cfdaa97" x="93" y="30" width="92" height="30" hTextAlign="Center">
+					<expression><![CDATA[$F{data_checkin}]]></expression>
+				</element>
+				<element kind="textField" uuid="6a23c5d1-7b55-46e7-a42f-3134b709b16f" x="185" y="30" width="92" height="30" hTextAlign="Center">
+					<expression><![CDATA[$F{data_checkout}]]></expression>
+				</element>
+				<element kind="textField" uuid="8ec59b6d-348c-4e4c-a38b-a836d0555e1f" x="277" y="30" width="91" height="30" hTextAlign="Center">
+					<expression><![CDATA[$F{quantidade_pessoas}]]></expression>
+				</element>
+				<element kind="textField" uuid="9f39d118-0b43-4e3b-99fb-ce9983828483" x="368" y="30" width="91" height="30" hTextAlign="Center">
+					<expression><![CDATA[$F{valor}]]></expression>
+				</element>
+				<element kind="textField" uuid="75604263-ae78-4cd8-8d6c-3d5c5b92fb20" x="459" y="30" width="94" height="30" hTextAlign="Center">
+					<expression><![CDATA[$F{nmr_quarto}]]></expression>
+				</element>
+				<element kind="staticText" uuid="cb63e249-03ec-4310-93c4-101e0eb796ae" x="212" y="70" width="160" height="18" fontSize="14.0" bold="true">
+					<text><![CDATA[Serviços da Reserva]]></text>
+				</element>
+				<element kind="staticText" uuid="b2d0c45e-41da-46ad-9c8a-02a2ffd48e1f" x="-2" y="10" width="95" height="14" bold="true" hTextAlign="Center">
+					<text><![CDATA[ID]]></text>
+				</element>
+				<element kind="staticText" uuid="1dc17e4f-fc62-421b-b5a6-f865503a3af9" x="93" y="10" width="92" height="14" bold="true" hTextAlign="Center">
+					<text><![CDATA[Data Checkin]]></text>
+				</element>
+				<element kind="staticText" uuid="d5f44d58-a031-4c93-87ac-853b860cf66b" x="185" y="10" width="92" height="14" bold="true" hTextAlign="Center">
+					<text><![CDATA[Data Checkout]]></text>
+				</element>
+				<element kind="staticText" uuid="665a4f07-6b39-4059-bb32-9c17622b4e53" x="277" y="10" width="90" height="15" bold="true" hTextAlign="Center">
+					<text><![CDATA[Hóspedes]]></text>
+				</element>
+				<element kind="staticText" uuid="69e88908-b862-4e08-a7ba-4ff4adbef2e0" x="367" y="10" width="92" height="16" bold="true" hTextAlign="Center">
+					<text><![CDATA[Diária (R$)]]></text>
+				</element>
+				<element kind="staticText" uuid="3eb36703-af19-4c7b-93ec-23aaf09fc40c" x="459" y="10" width="94" height="19" bold="true" hTextAlign="Center">
+					<text><![CDATA[Número Quarto]]></text>
+				</element>
+				<element kind="staticText" uuid="5f628553-b9c6-48eb-8875-ddc8967a8af2" x="1" y="110" width="138" height="17" bold="true" hTextAlign="Center">
+					<text><![CDATA[ID Serviço]]></text>
+				</element>
+				<element kind="staticText" uuid="0b3201ec-06c6-4134-b092-0fb24e42ea07" x="139" y="111" width="141" height="16" bold="true" hTextAlign="Center">
+					<text><![CDATA[Quantidade]]></text>
+				</element>
+				<element kind="staticText" uuid="b1ad11b7-ea77-4343-b680-d2f3a3796421" x="281" y="111" width="138" height="16" bold="true" hTextAlign="Center">
+					<text><![CDATA[Descrição]]></text>
+				</element>
+				<element kind="staticText" uuid="282093b4-f1a4-464d-bd30-141f2dc53b21" x="418" y="110" width="136" height="17" bold="true" hTextAlign="Center">
+					<text><![CDATA[Valor (R$)]]></text>
+				</element>
+			</band>
+		</groupHeader>
+	</group>
 	<background splitType="Stretch"/>
-	<title height="79" splitType="Stretch">
-		<element kind="staticText" uuid="2a15346e-3ec9-4fa4-8b9d-f51a7e37db03" x="212" y="30" width="140" height="29" fontSize="16.0">
+	<title height="118" splitType="Stretch">
+		<element kind="staticText" uuid="2a15346e-3ec9-4fa4-8b9d-f51a7e37db03" x="207" y="30" width="140" height="29" fontSize="16.0" removeLineWhenBlank="true">
 			<text><![CDATA[Recibo de Estadia]]></text>
 		</element>
-		<element kind="textField" uuid="e435179d-e446-4b27-9c80-7e29fa0dd4a1" x="500" y="0" width="55" height="30">
-			<expression><![CDATA[$F{reservaId}]]></expression>
+		<element kind="textField" uuid="d98e4fd8-77f2-44ed-bfbf-9cb4391246db" x="292" y="70" width="80" height="20" forecolor="#488A45" fontSize="12.0" removeLineWhenBlank="true">
+			<expression><![CDATA[$P{reservaId}]]></expression>
+		</element>
+		<element kind="staticText" uuid="dc805d66-a431-42ae-9f4f-e0f3e3680558" x="239" y="70" width="53" height="21" fontSize="12.0" removeLineWhenBlank="true">
+			<text><![CDATA[Reserva:]]></text>
+		</element>
+		<element kind="image" uuid="8781ad7b-393f-4e59-8675-0858061ccaf5" x="-20" y="-20" width="120" height="138">
+			<expression><![CDATA["/Logo Cabeçalho Recibo Redimens..png"]]></expression>
 		</element>
 	</title>
-	<pageHeader height="103" splitType="Stretch">
-		<element kind="staticText" uuid="7bcb1469-7308-407a-9b32-a774fa3d4042" x="212" y="0" width="130" height="30" fontSize="12.0">
+	<pageHeader height="90" splitType="Stretch">
+		<element kind="staticText" uuid="7bcb1469-7308-407a-9b32-a774fa3d4042" x="212" y="0" width="168" height="27" fontSize="14.0" removeLineWhenBlank="true" bold="true">
+			<printWhenExpression><![CDATA[$V{PAGE_NUMBER} == 1]]></printWhenExpression>
 			<text><![CDATA[Informações do Cliente]]></text>
 		</element>
-		<element kind="line" uuid="cd8c98fb-1eca-4e97-b433-c336e6181217" x="-10" y="1" width="1" height="96"/>
-		<element kind="line" uuid="28a29528-2ce2-4819-9832-cc589991ef43" x="562" y="1" width="1" height="96"/>
-		<element kind="frame" uuid="852aadef-6615-4751-96c8-536f996f42f6" x="0" y="20" width="555" height="60" backcolor="#E3E3E3">
-			<element kind="staticText" uuid="c5352ee8-91f2-426f-8167-46bf68139ec2" x="14" y="7" width="35" height="30" bold="true">
+		<element kind="line" uuid="cd8c98fb-1eca-4e97-b433-c336e6181217" x="-10" y="1" width="1" height="62" removeLineWhenBlank="true">
+			<printWhenExpression><![CDATA[$V{PAGE_NUMBER} == 1]]></printWhenExpression>
+		</element>
+		<element kind="frame" uuid="852aadef-6615-4751-96c8-536f996f42f6" x="0" y="20" width="553" height="28" backcolor="#E3E3E3" removeLineWhenBlank="true">
+			<printWhenExpression><![CDATA[$V{PAGE_NUMBER} == 1]]></printWhenExpression>
+			<element kind="staticText" uuid="c5352ee8-91f2-426f-8167-46bf68139ec2" x="14" y="7" width="35" height="16" bold="true">
 				<text><![CDATA[Nome:]]></text>
 			</element>
-			<element kind="textField" uuid="00c0edff-d592-48ff-a72f-697574417e23" x="49" y="8" width="80" height="16">
+			<element kind="textField" uuid="00c0edff-d592-48ff-a72f-697574417e23" x="50" y="8" width="80" height="16">
 				<expression><![CDATA[$F{nome}]]></expression>
 			</element>
-			<element kind="staticText" uuid="bf68d8e0-a324-4364-82b2-fa6a36eb8210" x="119" y="7" width="59" height="17" bold="true">
+			<element kind="staticText" uuid="bf68d8e0-a324-4364-82b2-fa6a36eb8210" x="141" y="8" width="59" height="17" bold="true">
 				<text><![CDATA[Sobrenome:]]></text>
 			</element>
-			<element kind="textField" uuid="4a5f4a61-64bc-4c5d-a0dd-04b836aac159" x="179" y="7" width="81" height="16">
+			<element kind="textField" uuid="4a5f4a61-64bc-4c5d-a0dd-04b836aac159" x="201" y="8" width="81" height="16">
 				<expression><![CDATA[$F{sobrenome}]]></expression>
 			</element>
-			<element kind="staticText" uuid="603fab0c-0df7-4fc8-80d8-d3183975b443" x="290" y="8" width="29" height="16" bold="true">
+			<element kind="staticText" uuid="603fab0c-0df7-4fc8-80d8-d3183975b443" x="291" y="8" width="29" height="18" bold="true">
 				<text><![CDATA[CPF:]]></text>
 			</element>
-			<element kind="textField" uuid="f9537f42-47d2-427c-a22d-e99fe1d50f3f" x="319" y="7" width="100" height="30">
+			<element kind="textField" uuid="f9537f42-47d2-427c-a22d-e99fe1d50f3f" x="317" y="9" width="69" height="14">
 				<expression><![CDATA[$F{cpf}]]></expression>
 			</element>
-			<element kind="staticText" uuid="c4c14d6a-e7a5-4119-b5db-89454c1a9996" x="410" y="10" width="40" height="16" bold="true">
-				<text><![CDATA[Contato;]]></text>
+			<element kind="staticText" uuid="c4c14d6a-e7a5-4119-b5db-89454c1a9996" x="410" y="8" width="45" height="13" bold="true">
+				<text><![CDATA[Contato:]]></text>
 			</element>
-			<element kind="textField" uuid="0dc45b4e-f012-4363-bdf4-fd3eaaaf1192" x="450" y="10" width="100" height="30">
+			<element kind="textField" uuid="0dc45b4e-f012-4363-bdf4-fd3eaaaf1192" x="454" y="8" width="99" height="13">
 				<expression><![CDATA[$F{telefone}]]></expression>
 			</element>
 			<box>
@@ -220,70 +321,71 @@
 				<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 			</box>
 		</element>
+		<element kind="staticText" uuid="5c62bee5-65b7-4cba-98dd-7973db02386e" x="219" y="60" width="126" height="30" fontSize="14.0" removeLineWhenBlank="true" bold="true">
+			<printWhenExpression><![CDATA[$V{PAGE_NUMBER} == 1]]></printWhenExpression>
+			<text><![CDATA[Dados da Reserva]]></text>
+		</element>
 		<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 	</pageHeader>
-	<columnHeader height="35" splitType="Stretch">
-		<element kind="staticText" uuid="d402f40f-7316-4d5a-a676-2228cc83601d" x="0" y="0" width="111" height="35" hTextAlign="Center">
-			<text><![CDATA[data_checkin]]></text>
-			<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="d79f3fb3-2cd7-4f08-a82e-a06af7b6907c"/>
-		</element>
-		<element kind="staticText" uuid="6a7c0bf8-c9b9-406e-bd66-8fb52b1f8c51" x="111" y="0" width="111" height="35" hTextAlign="Center">
-			<text><![CDATA[data_checkout]]></text>
-			<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="7fc12029-b4a9-4f04-8307-857b261bed4a"/>
-		</element>
-		<element kind="staticText" uuid="10868762-161e-4af5-bbb0-088c18c121cc" x="222" y="0" width="111" height="35" hTextAlign="Center">
-			<text><![CDATA[quantidade_pessoas]]></text>
-			<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e787bc02-636c-4bd7-8234-836048d66a81"/>
-		</element>
-		<element kind="staticText" uuid="542029c3-3b0c-4c80-b7cd-a0eaf42ebdbf" x="333" y="0" width="111" height="35" hTextAlign="Center">
-			<text><![CDATA[preco_diaria]]></text>
-			<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c1999683-cf15-4dbd-8546-9e12e9acabd3"/>
-		</element>
-		<element kind="staticText" uuid="b24e58a5-bc15-4a7f-9e6e-6ab85fc09a89" x="444" y="0" width="111" height="35" hTextAlign="Center">
-			<text><![CDATA[nmr_quarto]]></text>
-			<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="4af8848e-7e2c-4576-b9a4-90f53975e107"/>
-		</element>
-		<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.grid.JSSGridBagLayout"/>
-	</columnHeader>
 	<detail>
-		<band height="112" splitType="Stretch">
-			<element kind="textField" uuid="56891b88-74b7-4981-abff-d0d3d0f2cf0c" x="0" y="0" width="111" height="112" hTextAlign="Center">
-				<expression><![CDATA[$F{data_checkin}]]></expression>
-				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="d79f3fb3-2cd7-4f08-a82e-a06af7b6907c"/>
+		<band height="44">
+			<element kind="textField" uuid="7280fdc9-1d26-4a5b-a16d-ea6c45987d04" x="0" y="0" width="138" height="30" blankWhenNull="true" hTextAlign="Center">
+				<expression><![CDATA[$F{COLUMN_32}]]></expression>
 			</element>
-			<element kind="textField" uuid="d2fc726a-5c49-4d33-89ee-68e5b9797489" x="111" y="0" width="111" height="112" hTextAlign="Center">
-				<expression><![CDATA[$F{data_checkout}]]></expression>
-				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="7fc12029-b4a9-4f04-8307-857b261bed4a"/>
+			<element kind="textField" uuid="e5f09065-4f81-4bce-a4b5-0e2dff545944" x="280" y="0" width="138" height="30" blankWhenNull="true" hTextAlign="Center">
+				<expression><![CDATA[$F{COLUMN_33}]]></expression>
 			</element>
-			<element kind="textField" uuid="589b9ac2-cfc4-4329-81e2-c6f35be20398" x="222" y="0" width="111" height="112" hTextAlign="Center">
-				<expression><![CDATA[$F{quantidade_pessoas}]]></expression>
-				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e787bc02-636c-4bd7-8234-836048d66a81"/>
+			<element kind="textField" uuid="8bde4954-9e78-4d77-be49-a81c4ddbcbde" x="419" y="0" width="134" height="30" blankWhenNull="true" hTextAlign="Center">
+				<expression><![CDATA[$F{COLUMN_34}]]></expression>
 			</element>
-			<element kind="textField" uuid="2b4d1789-ff02-48db-95d5-e399a88bb243" x="333" y="0" width="111" height="112" hTextAlign="Center">
-				<expression><![CDATA[$F{preco_diaria}]]></expression>
-				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c1999683-cf15-4dbd-8546-9e12e9acabd3"/>
-			</element>
-			<element kind="textField" uuid="4f0c51d1-2815-4259-b89a-4b4350213d9f" x="444" y="0" width="111" height="112" hTextAlign="Center">
-				<expression><![CDATA[$F{nmr_quarto}]]></expression>
-				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="4af8848e-7e2c-4576-b9a4-90f53975e107"/>
-			</element>
-			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.spreadsheet.SpreadsheetLayout"/>
-		</band>
-		<band height="230">
-			<element kind="subreport" uuid="b8bfa8d2-3563-4f35-86db-35ee0d3a6775" x="14" y="30" width="452" height="200">
-				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-				<expression><![CDATA["SubReportServicos.jasper"]]></expression>
+			<element kind="textField" uuid="e9653e31-858c-4dff-a97f-93399dc98088" x="138" y="0" width="141" height="30" blankWhenNull="true" hTextAlign="Center">
+				<expression><![CDATA[$F{quantidade}]]></expression>
 			</element>
 		</band>
 	</detail>
-	<columnFooter height="45" splitType="Stretch"/>
-	<pageFooter height="67" splitType="Stretch">
-		<element kind="textField" uuid="62529e43-a625-4766-a7aa-ad6dc4cde84f" x="550" y="24" width="25" height="30">
+	<pageFooter height="17" splitType="Stretch">
+		<element kind="textField" uuid="62529e43-a625-4766-a7aa-ad6dc4cde84f" x="530" y="0" width="25" height="17">
 			<expression><![CDATA[$V{PAGE_NUMBER}]]></expression>
 		</element>
-		<element kind="staticText" uuid="aac2c471-b291-4865-98ed-baf97eb9b814" x="510" y="25" width="40" height="16">
+		<element kind="staticText" uuid="aac2c471-b291-4865-98ed-baf97eb9b814" x="490" y="0" width="40" height="16">
 			<text><![CDATA[Página]]></text>
 		</element>
 	</pageFooter>
-	<summary height="58" splitType="Stretch"/>
+	<summary height="81" splitType="Stretch">
+		<element kind="staticText" uuid="177a6cc8-6711-4b4b-aaf9-2925e7fb68e1" x="-10" y="30" width="80" height="30" fontSize="14.0" bold="true">
+			<text><![CDATA[Pagamento]]></text>
+		</element>
+		<element kind="staticText" uuid="695046e8-1ad4-4d3d-83fb-de7bce3d8cac" x="219" y="23" width="104" height="19" bold="true" hTextAlign="Center">
+			<text><![CDATA[Método Pag.]]></text>
+		</element>
+		<element kind="textField" uuid="a60742bd-7303-466a-a422-abed8cd22ff5" x="220" y="39" width="102" height="21" blankWhenNull="true" hTextAlign="Center">
+			<expression><![CDATA[$F{metodo_pagamento}]]></expression>
+		</element>
+		<element kind="staticText" uuid="e9d8fe6d-9d84-422a-88f2-4bf207d216b5" x="345" y="23" width="100" height="16" bold="true" hTextAlign="Center">
+			<text><![CDATA[Data/Hora Pag.]]></text>
+		</element>
+		<element kind="textField" uuid="3bb79312-b044-4c58-b4e9-742fb43856df" x="345" y="39" width="100" height="21" blankWhenNull="true" hTextAlign="Center">
+			<expression><![CDATA[$F{data_pagamento}]]></expression>
+		</element>
+		<element kind="textField" uuid="c942c33c-bed5-4094-94c2-74867c9d3b59" x="110" y="42" width="89" height="15" blankWhenNull="true" hTextAlign="Center">
+			<expression><![CDATA[$F{valor_total}]]></expression>
+		</element>
+		<element kind="staticText" uuid="2287af61-2ae7-4c31-8705-abafd2d1bd16" x="110" y="23" width="89" height="19" bold="true" hTextAlign="Center">
+			<text><![CDATA[Valor Total]]></text>
+		</element>
+		<element kind="line" uuid="27cee6a8-b22a-47c5-89ad-1c53cbe70335" x="80" y="20" width="1" height="45"/>
+		<element kind="textField" uuid="7317da77-50f6-4a53-8c35-9fb721a3d6ed" key="" x="470" y="39" width="86" height="21" forecolor="#006633" hTextAlign="Center">
+			<printWhenExpression><![CDATA[$F{status_pagamento}.equals("Concluído")]]></printWhenExpression>
+			<expression><![CDATA[$F{status_pagamento}]]></expression>
+			<property name="com.jaspersoft.studio.element.name" value="A"/>
+		</element>
+		<element kind="staticText" uuid="323c313d-5335-43f1-bbf8-2062da51b151" x="470" y="23" width="86" height="16" bold="true" hTextAlign="Center">
+			<text><![CDATA[Status]]></text>
+		</element>
+		<element kind="textField" uuid="6cab6969-b94d-4abe-8594-4572e2eb3d48" key="" x="469" y="38" width="89" height="23" forecolor="#C2062B" hTextAlign="Center">
+			<printWhenExpression><![CDATA[$F{status_pagamento}.equals("Pendente") || $F{status_pagamento}.equals("Estornado")]]></printWhenExpression>
+			<expression><![CDATA[$F{status_pagamento}]]></expression>
+			<property name="com.jaspersoft.studio.element.name" value="B"/>
+		</element>
+	</summary>
 </jasperReport>
