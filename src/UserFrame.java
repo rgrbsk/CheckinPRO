@@ -130,7 +130,7 @@ public class UserFrame extends JPanel {
 		JPanel panelCustomFooter = new JPanel();
 		panelCustomFooter.setLayout(null);
 		panelCustomFooter.setBackground(Color.DARK_GRAY);
-		panelCustomFooter.setBounds(455, 770, 592, 64);
+		panelCustomFooter.setBounds(348, 770, 592, 64);
 		add(panelCustomFooter);
 		
 		JLabel lblNewLabel = new JLabel("Clientes Cadastrados:");
@@ -162,7 +162,7 @@ public class UserFrame extends JPanel {
 		comboLimitarReg.setEditable(true);
 		comboLimitarReg.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		comboLimitarReg.setToolTipText("");
-		comboLimitarReg.setBounds(1081, 800, 83, 34);
+		comboLimitarReg.setBounds(974, 800, 83, 34);
 		add(comboLimitarReg);
 		comboLimitarReg.addItem("1000");
 		comboLimitarReg.addItem("20");
@@ -186,7 +186,7 @@ public class UserFrame extends JPanel {
 		
 		JCheckBox checkPerformance = new JCheckBox("Qnt Clientes Grid");
 		checkPerformance.setHorizontalAlignment(SwingConstants.CENTER);
-		checkPerformance.setBounds(1071, 770, 123, 19);
+		checkPerformance.setBounds(964, 770, 123, 19);
 		add(checkPerformance);
 		
 		JButton btnEditarCadastro = new JButton("Visualizar / Editar Cadastro");
@@ -201,7 +201,7 @@ public class UserFrame extends JPanel {
 		JLabel lblMaxRegistros = new JLabel("Máximo de registros a serem exibidos: 1000");
 		lblMaxRegistros.setForeground(Color.GREEN);
 		lblMaxRegistros.setVisible(false);
-		lblMaxRegistros.setBounds(643, 745, 276, 14);
+		lblMaxRegistros.setBounds(536, 745, 276, 14);
 		add(lblMaxRegistros);
 		
 		JLabel label = new JLabel("New label");

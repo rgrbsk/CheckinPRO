@@ -264,17 +264,12 @@ public class CheckoutModuleWindow extends JPanel {
     	    
     	    JButton btnPagCartao = new JButton("Cartão");
     	    btnPagCartao.setIcon(new ImageIcon(CheckoutModuleWindow.class.getResource("/img/MasterCard.png")));
-    	    btnPagCartao.setBounds(86, 108, 168, 44);
+    	    btnPagCartao.setBounds(86, 128, 168, 44);
     	    panelCheckDate_1.add(btnPagCartao);
-    	    
-    	    JButton btnPagTransferencia = new JButton("Transf. Bancária");
-    	    btnPagTransferencia.setIcon(new ImageIcon(CheckoutModuleWindow.class.getResource("/img/Paycheque.png")));
-    	    btnPagTransferencia.setBounds(86, 203, 168, 44);
-    	    panelCheckDate_1.add(btnPagTransferencia);
     	    
     	    JComboBox comboCartoes = new JComboBox();
     	    
-    	    comboCartoes.setBounds(86, 148, 168, 22);
+    	    comboCartoes.setBounds(86, 168, 168, 22);
     	    panelCheckDate_1.add(comboCartoes);
     	    comboCartoes.addItem("Cartão de Débito");
     	    comboCartoes.addItem("Cartão de Crédito");
@@ -291,12 +286,12 @@ public class CheckoutModuleWindow extends JPanel {
     	    
     	    JButton btnPagPix = new JButton("PIX");
     	    btnPagPix.setIcon(new ImageIcon(CheckoutModuleWindow.class.getResource("/img/Pix.png")));
-    	    btnPagPix.setBounds(86, 276, 168, 44);
+    	    btnPagPix.setBounds(86, 249, 168, 44);
     	    panelCheckDate_1.add(btnPagPix);
     	    
     	    textParcelas = new JTextField();
     	    textParcelas.setColumns(10);
-    	    textParcelas.setBounds(264, 148, 45, 22);
+    	    textParcelas.setBounds(264, 168, 45, 22);
     	    panelCheckDate_1.add(textParcelas);
     	    
     	    JLabel labelParcelas = new JLabel("Parcelas");
@@ -659,13 +654,6 @@ public class CheckoutModuleWindow extends JPanel {
 						textMetodoPagamento.setText("Débito");
 					}
 					
-				}
-			});
-			btnPagTransferencia.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					JOptionPane.showMessageDialog(infoFinal, "Função em andamento.");
-					//textMetodoPagamento.setText("Transferência Bancária");
 				}
 			});
 			btnPagPix.addActionListener(new ActionListener() {

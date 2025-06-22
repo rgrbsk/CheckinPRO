@@ -29,38 +29,10 @@ public class GerarRelatorios {
 
 	        ResultSet rs = Conexao.executeQuery(sql, parametrosSQL);
 
-	        // Criando um mapa de parâmetros para o relatório
 	        Map<String, Object> parametrosRelatorio = new HashMap<>();
 	        parametrosRelatorio.put("reservaId", reservaId);
 
-	        // Verificando se há dados e montando o relatório
-	        if (rs.next()) {
-	            parametrosRelatorio.put("clienteNome", rs.getString("clienteNome"));
-
-	            // Criando uma lista para armazenar os serviços
-	            StringBuilder servicosLista = new StringBuilder();
-	            double valorTotalServicos = 0.0;
-
-	            do {
-	                String servico = rs.getString("servicoDescricao");
-	                double valor = rs.getDouble("servicoValor");
-
-	                if (servico != null) {
-	                    servicosLista.append(servico).append(" - R$ ").append(valor).append("\n");
-	                    valorTotalServicos += valor;
-	                }
-	            } while (rs.next());
-
-	            // Aplicando desconto (por exemplo, 10% sobre serviços)
-	            double desconto = valorTotalServicos * 0.10;
-	            double valorFinal = valorTotalServicos - desconto;
-
-	            // Adicionando valores ao relatório
-	            parametrosRelatorio.put("servicos", servicosLista.toString());
-	            parametrosRelatorio.put("valorTotalServicos", valorTotalServicos);
-	            parametrosRelatorio.put("desconto", desconto);
-	            parametrosRelatorio.put("valorFinal", valorFinal);
-	        }
+	       
 
 	        // Caminho do relatório compilado (.jasper)
 	        String caminhoRelatorio = "src/systemReports/ReciboPdf.jasper";
