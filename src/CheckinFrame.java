@@ -12,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -21,6 +22,7 @@ import javax.swing.table.DefaultTableModel;
 
 import checkinWindow.AddReserveWindow;
 import objects.Reserve;
+import systemReports.GerarRelatorios;
 
 public class CheckinFrame extends JPanel {
 
@@ -177,8 +179,9 @@ public class CheckinFrame extends JPanel {
 	        JScrollPane scrollPane = new JScrollPane(tabela);
 	        scrollPane.setBounds(6, 119, 1280, 620);
 	        add(scrollPane);
+
 	        
-	        loadData();  
+	        loadData();
 	}
 		
 		 private void loadData() {
@@ -283,5 +286,4 @@ public class CheckinFrame extends JPanel {
 		    	
 		    	 }
 		    }
-		    
 }

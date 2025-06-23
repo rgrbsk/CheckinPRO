@@ -119,15 +119,7 @@ public class UserFrame extends JPanel {
 		scrollPane.setEnabled(false);
 		scrollPane.setBounds(6, 121, 1280, 620);
 		add(scrollPane);
-		tabelaClientes.setShowGrid(true); 
-
-
-		
-		JButton btnNewButtonRefresh = new JButton("");
-		btnNewButtonRefresh.setBounds(1212, 776, 74, 34);
-		btnNewButtonRefresh.setIcon(new ImageIcon(UserFrame.class.getResource("/img/icons8-actualizar-30 (1).png")));
-		btnNewButtonRefresh.setForeground(Color.WHITE);
-		add(btnNewButtonRefresh);
+		tabelaClientes.setShowGrid(true);
 		
 
 		JButton btnCadastrarCliente = new JButton("Cadastrar Cliente");
@@ -138,7 +130,7 @@ public class UserFrame extends JPanel {
 		JPanel panelCustomFooter = new JPanel();
 		panelCustomFooter.setLayout(null);
 		panelCustomFooter.setBackground(Color.DARK_GRAY);
-		panelCustomFooter.setBounds(455, 770, 592, 64);
+		panelCustomFooter.setBounds(348, 770, 592, 64);
 		add(panelCustomFooter);
 		
 		JLabel lblNewLabel = new JLabel("Clientes Cadastrados:");
@@ -170,7 +162,7 @@ public class UserFrame extends JPanel {
 		comboLimitarReg.setEditable(true);
 		comboLimitarReg.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		comboLimitarReg.setToolTipText("");
-		comboLimitarReg.setBounds(1081, 800, 83, 34);
+		comboLimitarReg.setBounds(974, 800, 83, 34);
 		add(comboLimitarReg);
 		comboLimitarReg.addItem("1000");
 		comboLimitarReg.addItem("20");
@@ -194,7 +186,7 @@ public class UserFrame extends JPanel {
 		
 		JCheckBox checkPerformance = new JCheckBox("Qnt Clientes Grid");
 		checkPerformance.setHorizontalAlignment(SwingConstants.CENTER);
-		checkPerformance.setBounds(1071, 770, 123, 19);
+		checkPerformance.setBounds(964, 770, 123, 19);
 		add(checkPerformance);
 		
 		JButton btnEditarCadastro = new JButton("Visualizar / Editar Cadastro");
@@ -209,7 +201,7 @@ public class UserFrame extends JPanel {
 		JLabel lblMaxRegistros = new JLabel("Máximo de registros a serem exibidos: 1000");
 		lblMaxRegistros.setForeground(Color.GREEN);
 		lblMaxRegistros.setVisible(false);
-		lblMaxRegistros.setBounds(643, 745, 276, 14);
+		lblMaxRegistros.setBounds(536, 745, 276, 14);
 		add(lblMaxRegistros);
 		
 		JLabel label = new JLabel("New label");

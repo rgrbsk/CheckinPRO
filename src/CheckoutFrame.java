@@ -39,6 +39,7 @@ import javax.swing.JTextArea;
 import java.awt.Component;
 import javax.swing.JComboBox;
 import javax.swing.JCheckBox;
+import javax.swing.JPasswordField;
 
 public class CheckoutFrame extends JPanel {
 
@@ -47,6 +48,7 @@ public class CheckoutFrame extends JPanel {
 	private JTable tabelaReservas;
 	private DefaultTableModel modelTable;
 	public int reservaId;
+	private JPasswordField passwordField;
 
 	/**
 	 * Create the panel.
@@ -204,7 +206,7 @@ public class CheckoutFrame extends JPanel {
         btnVerServicos.setIcon(new ImageIcon(CheckoutFrame.class.getResource("/img/Contacts40.png")));
         btnVerServicos.setHorizontalAlignment(SwingConstants.LEFT);
         btnVerServicos.setForeground(Color.WHITE);
-        btnVerServicos.setBounds(605, 75, 172, 34);
+        btnVerServicos.setBounds(605, 75, 181, 34);
         add(btnVerServicos);
         
         JButton btnReimpressao = new JButton("Reimpressão");
@@ -228,8 +230,34 @@ public class CheckoutFrame extends JPanel {
         });
         btnReimpressao.setIcon(new ImageIcon(CheckoutFrame.class.getResource("/img/Receipt.png")));
         btnReimpressao.setForeground(Color.WHITE);
-        btnReimpressao.setBounds(6, 747, 172, 34);
+        btnReimpressao.setBounds(806, 75, 172, 34);
         add(btnReimpressao);
+        
+        passwordField = new JPasswordField();
+        
+        passwordField.setHorizontalAlignment(SwingConstants.CENTER);
+        passwordField.setBounds(806, 89, 172, 20);
+        add(passwordField);
+        
+        JButton btnVerify = new JButton("");
+        btnVerify.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        	                String senha = new String(passwordField.getPassword());
+        	                                if (senha.equals("Admin")) { // Verifica se a senha é "admin"
+        	                                	btnReimpressao.setVisible(true);
+        	                                	passwordField.setText(""); // Limpa o campo de senha
+        	                                	passwordField.setEnabled(false); // Desabilita o campo de senha
+        	                                	btnVerify.setVisible(false); // Desabilita o botão de verificação
+        	                                } else {
+        	                                	JOptionPane.showMessageDialog(null, "Senha incorreta. Tente novamente.", "Erro de Autenticação", JOptionPane.ERROR_MESSAGE);
+        	                                	
+        	                                }
+        	}
+        });
+        btnVerify.setIcon(new ImageIcon(CheckoutFrame.class.getResource("/img/Done1.png")));
+        btnVerify.setBounds(977, 86, 36, 23);
+        add(btnVerify);
+        btnReimpressao.setVisible(false);
         
 		
 		

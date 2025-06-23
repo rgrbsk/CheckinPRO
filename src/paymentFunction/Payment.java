@@ -96,6 +96,10 @@ public class Payment {
             e.printStackTrace();
             return 0;
         }}
+	
+
+		
+	
 	public static boolean verificarPagamento(int idReserva) {
 		String sql = "SELECT COUNT(*) FROM pagamento WHERE id_reserva = ?";
 		List<Object> params = new ArrayList<>();
