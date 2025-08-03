@@ -1,4 +1,4 @@
-# \# 🏨 CheckinPRO
+CheckinPRO
 
 # 
 
@@ -6,7 +6,7 @@
 
 # 
 
-# \## ✨ Funcionalidades
+Funcionalidades
 
 # 
 
@@ -26,10 +26,11 @@
 
 # 
 
-# 🧠 Desenvolvido com Java e conceitos de programação orientada a objetos, Banco de dados MySQL, utilizando o WindowBuilder para a interface e JasperReports para os relatórios. Para o versionamento do projeto utilizamos o Git.
+Desenvolvido com Java e conceitos de programação orientada a objetos, Banco de dados MySQL, utilizando o WindowBuilder para a interface e JasperReports para os relatórios. Para o versionamento do projeto utilizamos o Git.
 
 
 Para a execução do projeto, execute o comando git clone no terminal, ou baixe em formato .zip no GitHub.
+Autores: Róger B.; Samii Z.; Raul D.; Eduardo B.;
 
 ===
 
